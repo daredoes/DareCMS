@@ -112,7 +112,7 @@ class Config(_Overridable):
     def CURRENT_ADMIN(self):
         try:
             with sa.Session() as session:
-                return session.admin_attendee().to_dict()
+                return session.admin_user().to_dict()
         except:
             return {}
 

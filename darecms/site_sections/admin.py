@@ -93,10 +93,10 @@ class Root:
                     session.commit()
                 session.add(PasswordReset(admin_account=account, hashed=bcrypt.hashpw(password, bcrypt.gensalt())))
                 body = render('emails/accounts/password_reset.txt', {
-                    'name': account.attendee.full_name,
+                    'name': account.user.full_name,
                     'password':  password
                 })
-                send_email(c.ADMIN_EMAIL, account.attendee.email, c.EVENT_NAME + ' Admin Password Reset', body)
+                send_email(c.ADMIN_EMAIL, account.user.email, c.EVENT_NAME + ' Admin Password Reset', body)
                 raise HTTPRedirect('login?message={}', 'Your new password has been emailed to you')
 
         return {

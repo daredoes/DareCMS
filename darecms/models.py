@@ -442,22 +442,22 @@ class Session(SessionManager):
             return self.filter(*[func.lower(getattr(self.model, attr)) == func.lower(val) for attr, val in filters.items()])
 
     class SessionMixin:
-        def admin_attendee(self):
-            return self.admin_account(cherrypy.session['account_id']).attendee
+        def admin_user(self):
+            return self.admin_account(cherrypy.session['account_id']).user
 
         def logged_in_user(self):
-            return self.attendee(cherrypy.session['user_id'])
+            return self.user(cherrypy.session['user_id'])
 
         def checklist_status(self, slug, department):
-            attendee = self.admin_attendee()
+            user = self.admin_user()
             conf = DeptChecklistConf.instances.get(slug)
             if not conf:
                 raise ValueError("Can't access dept checklist INI settings for section '{}', check your INI file".format(slug))
 
             return {
                 'conf': conf,
-                'relevant': attendee.is_single_dept_head and attendee.assigned_depts_ints == [int(department or 0)],
-                'completed': conf.completed(attendee)
+                'relevant': user.is_single_dept_head and user.assigned_depts_ints == [int(department or 0)],
+                'completed': conf.completed(user)
             }
 
         def get_account_by_email(self, email):
@@ -533,7 +533,7 @@ class User(MainModel):
     comments    = Column(UnicodeText)
     admin_notes = Column(UnicodeText, admin_only=True)
 
-    admin_account     = relationship('AdminAccount', backref=backref('attendee', load_on_pending=True), uselist=False)
+    admin_account     = relationship('AdminAccount', backref=backref('user', load_on_pending=True), uselist=False)
 
     _repr_attr_names = ['full_name']
 
@@ -554,9 +554,9 @@ class User(MainModel):
     def age_group_conf(self):
         if self.birthdate:
             sa.localized_now().date()
-            attendee_age = (day - self.birthdate).days // 365.2425
+            user_age = (day - self.birthdate).days // 365.2425
             for val, age_group in c.AGE_GROUP_CONFIGS.items():
-                if val != c.AGE_UNKNOWN and age_group['min_age'] <= attendee_age <= age_group['max_age']:
+                if val != c.AGE_UNKNOWN and age_group['min_age'] <= user_age <= age_group['max_age']:
                     return age_group
 
         return c.AGE_GROUP_CONFIGS[int(self.age_group or c.AGE_UNKNOWN)]
@@ -627,17 +627,13 @@ class AdminAccount(MainModel):
     password_reset = relationship('PasswordReset', backref='admin_account', uselist=False)
 
     def __repr__(self):
-        return '<{}>'.format(self.attendee.full_name)
-
-    @staticmethod
-    def is_dick():
-        return AdminAccount.admin_name() in c.JERKS
+        return '<{}>'.format(self.user.full_name)
 
     @staticmethod
     def admin_name():
         try:
             with Session() as session:
-                return session.admin_attendee().full_name
+                return session.admin_user().full_name
         except:
             return None
 
@@ -645,7 +641,7 @@ class AdminAccount(MainModel):
     def admin_email():
         try:
             with Session() as session:
-                return session.admin_attendee().email
+                return session.admin_user().email
         except:
             return None
 
@@ -779,7 +775,7 @@ class Tracking(MainModel):
     # TODO: add new table for page views to eliminated track_pageview method and to eliminate Budget special case
     @classmethod
     def track(cls, action, instance):
-        if action in [c.CREATED, c.UNPAID_PREREG, c.EDITED_PREREG]:
+        if action in [c.CREATED]:
             vals = {attr: cls.repr(column, getattr(instance, attr)) for attr, column in instance.__table__.columns.items()}
             data = cls.format(vals)
         elif action == c.UPDATED:
@@ -825,11 +821,6 @@ class Tracking(MainModel):
             if 'id' not in params or params['id'] == 'None':
                 return
 
-            # Looking at an attendee's details
-            if "registration" in url:
-                with Session() as session:
-                    attendee = session.query(User).filter(User.id == params['id']).first()
-                    Tracking.track(c.PAGE_VIEWED, attendee)
 
 Tracking.UNTRACKED = [Tracking, Email]
 

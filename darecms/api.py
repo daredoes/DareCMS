@@ -20,18 +20,6 @@ fields = dict({
 }, **{field: True for field in attendee_fields})
 
 
-class AttendeeLookup:
-    def lookup(self, badge_num):
-        with Session() as session:
-            attendee = session.query(Attendee).filter_by(badge_num=badge_num).first()
-            return attendee.to_dict(fields) if attendee else {'error': 'No attendee found with Badge #{}'.format(badge_num)}
-
-    def search(self, query):
-        with Session() as session:
-            return [a.to_dict(fields) for a in session.search(query).all()]
-
-services.register(AttendeeLookup(), 'attendee')
-
 job_fields = dict({
     'name': True,
     'description': True,

@@ -21,7 +21,7 @@ def log_pageview(func):
     def with_check(*args, **kwargs):
         with sa.Session() as session:
             try:
-                attendee = session.admin_account(cherrypy.session['account_id'])
+                user = session.admin_account(cherrypy.session['account_id'])
             except:
                 pass  # we don't care about unrestricted pages for this version
             else:
