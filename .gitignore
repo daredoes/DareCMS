@@ -1,0 +1,9 @@
+.idea
+env
+*.pyc
+*.egg-info
+dist
+.eggs/
+development.ini
+node_modules
+bower_components

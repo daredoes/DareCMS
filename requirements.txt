@@ -1,0 +1,9 @@
+psycopg2>=2.5.2
+pytz>=2014.4
+bcrypt>=3.1.2
+pep8>=1.6.2
+alembic>=0.8.7
+treepoem>=1.0.1
+pycrypto>=2.6.1
+future==0.16.0
+parse>=1.6.6
