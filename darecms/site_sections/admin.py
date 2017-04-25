@@ -54,6 +54,11 @@ class Root:
         return {'message': message}
 
     @unrestricted
+    def error(self, session, message=''):
+        message = session.query(AdminAccount).first()
+        return {'message': message}
+
+    @unrestricted
     def logout(self):
         for key in list(cherrypy.session.keys()):
             if key not in ['preregs', 'paid_preregs', 'job_defaults', 'prev_location']:
@@ -70,6 +75,10 @@ class Root:
                 method = getattr(module_root, name)
                 if getattr(method, 'exposed', False):
                     spec = inspect.getfullargspec(get_innermost(method))
+                    a = set(getattr(method, 'restricted', []) or [])
+                    d = AdminAccount.access_set()
+                    b = a.intersection(d)
+                    e = getattr(method, 'site_mappable', False)
                     if set(getattr(method, 'restricted', []) or []).intersection(AdminAccount.access_set()) \
                             and (getattr(method, 'site_mappable', False)
                               or len([arg for arg in spec.args[1:] if arg != 'session']) == len(spec.defaults or []) and not spec.varkw):

@@ -1,20 +1,20 @@
 module.exports = function (grunt) {
     grunt.initConfig({
-        pkg: grunt.file.readJSON('package.json'),
+        pkg: grunt.file.readJSON('bower.json'),
         bower_concat: {
             all: {
-                dest: 'hub/static/combined.js',
-                cssDest: 'hub/static/combined.css',
+                dest: 'darecms/static/combined.js',
+                cssDest: 'darecms/static/combined.css',
                 callback: function (mainFiles, component) {
                     if (component === 'select2') {
                         // the default select2 file doesn't contain full functionality and we want the full thing
                         return mainFiles.map(function(filepath) {
                             return filepath.replace('select2.js', 'select2.full.js');
                         });
-                    } else if (component === 'bootstrap') {
+                    } else if (component === 'materialize') {
                         return mainFiles.concat([
-                            process.cwd() + '/bower_components/bootstrap/dist/css/bootstrap-theme.css',
-                            process.cwd() + '/bower_components/bootstrap/js/button.js'
+                            process.cwd() + '/bower_components/materialize/dist/css/materialize.min.css',
+                            process.cwd() + '/bower_components/materialize/dist/js/materialize.min.js'
                         ]);
                     } else if (component === 'jquery-ui') {
                         return mainFiles.concat([process.cwd() + '/bower_components/jquery-ui/themes/ui-lightness/jquery-ui.css']);

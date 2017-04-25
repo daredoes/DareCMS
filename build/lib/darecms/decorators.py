@@ -278,7 +278,11 @@ def restricted(func):
     @wraps(func)
     def with_restrictions(*args, **kwargs):
         if func.restricted:
-            if cherrypy.session.get('account_id') is None:
+            if func.restricted == (c.SIGNUPS,):
+                if not cherrypy.session.get('staffer_id'):
+                    raise HTTPRedirect('../signups/login?message=You+are+not+logged+in', save_location=True)
+
+            elif cherrypy.session.get('account_id') is None:
                 raise HTTPRedirect('../accounts/login?message=You+are+not+logged+in', save_location=True)
 
             else:

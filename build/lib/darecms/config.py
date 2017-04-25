@@ -114,6 +114,7 @@ class Config(_Overridable):
             with sa.Session() as session:
                 return session.admin_user().to_dict()
         except Exception as e:
+            print(e)
             return {}
 
     @property
