@@ -164,28 +164,6 @@ class MainModel:
         self._invoke_adjustment_callbacks('predelete_adjustment')
 
     @property
-    def addons(self):
-        """
-        This exists only to be overridden by other events; it should return a
-        list of strings are the extra things which an attendee or group has
-        purchased.  For example, in the MAGStock codebase, we've got code which
-        looks something like this:
-
-            @Session.model_mixin
-            class Attendee:
-                purchased_food = Column(Boolean, default=False)
-
-                @property
-                def addons(self):
-                    return ['Food'] if self.purchased_food else []
-
-        Our various templates use this information to display a summary to the
-        user of what they have purchased, e.g. in the prereg confirmation page
-        and in their confirmation emails.
-        """
-        return []
-
-    @property
     def cost_property_names(self):
         """Returns the names of all cost properties on this model."""
         return [name for name, attr in self._class_attrs.items() if isinstance(attr, cost_property)]
@@ -447,18 +425,6 @@ class Session(SessionManager):
 
         def logged_in_user(self):
             return self.user(cherrypy.session['user_id'])
-
-        def checklist_status(self, slug, department):
-            user = self.admin_user()
-            conf = DeptChecklistConf.instances.get(slug)
-            if not conf:
-                raise ValueError("Can't access dept checklist INI settings for section '{}', check your INI file".format(slug))
-
-            return {
-                'conf': conf,
-                'relevant': user.is_single_dept_head and user.assigned_depts_ints == [int(department or 0)],
-                'completed': conf.completed(user)
-            }
 
         def get_account_by_email(self, email):
             return self.query(AdminAccount).join(User).filter(func.lower(User.email) == func.lower(email)).one()
