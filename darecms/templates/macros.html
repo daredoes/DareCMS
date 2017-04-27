@@ -34,3 +34,12 @@ return "<a onClick='{inner_text}' href='{self.href}'>{self.text}</a>".format(inn
     checked can likely be model.html_checkbox_value() #}
     <div class="radio"><label class="btn btn-primary"><input type="radio" name="{{ name }}" value="{{ value }}" {{ checked }} /></label></div>
 {%- endmacro %}
+
+{% macro card(header, content, card_css='blue-grey darken-1', content_css='white-text') -%}
+    <div class="card {{ card_css }}">
+        <div class="card-content {{ content_css }}">
+          <span class="card-title">{{ header }}</span>
+          <p>{{content}}</p>
+        </div>
+    </div>
+{%- endmacro %}

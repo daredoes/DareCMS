@@ -127,7 +127,7 @@ class Root:
                 message = 'Incorrect old password; please try again'
             else:
                 check_csrf(csrf_token)
-                account.hashed = bcrypt.hashpw(new_password, bcrypt.gensalt())
+                account.hashed = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt())
                 raise HTTPRedirect('homepage?message={}', 'Your password has been updated')
 
         return {'message': message}

@@ -7,10 +7,11 @@
     <link rel="icon" href="../static/images/favicon.png" type="image/x-icon" />
 
     {% block head_styles %}
-        <link rel="stylesheet" href="../static/combined.css" />
+        <link rel="stylesheet" href="../static/css/materialize.min.css" />
         <link rel="stylesheet" href="../static/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="../static/css/toastr.min.css" />
+        <link rel="stylesheet" href="../static/css/custom.css" />
         {% if admin_area %}
-            <link rel="stylesheet" type="text/css" href="../static_views/additional-styles.css" />
         {% endif %}
     {% endblock %}
 
@@ -19,11 +20,14 @@
             var message = '{{ message|e }}';
         </script>
 
-        <script type="text/javascript" src="../static/combined.js"></script>
+        <script type="text/javascript" src="../static/js/jquery-3.2.1.min.js"></script>
+        <script type="text/javascript" src="../static/js/toastr.min.js"></script>
+        <script type="text/javascript" src="../static/js/materialize.min.js"></script>
+
         <script type="text/javascript">
             var csrf_token = '{{ c.CSRF_TOKEN }}';
             $(function() {
-                $(window).load(function() {
+                $(window).on('load', function() {
                     $(".loader").fadeOut("fast");
                 });
                 toastr.options = {
@@ -67,29 +71,25 @@
     {% endblock %}
     <div id="mainContainer" class="container-fluid">
         {% block backlink %}
-        <nav">
+        <ul id="adminDropdown" class="dropdown-content">
+          <li><a href="#!">Inbox</a></li>
+          <li><a href="../admin/change_password">Account</a></li>
+          <li class="divider"></li>
+          <li><a href="../admin/logout">Log Out</a></li>
+        </ul>
+          <nav>
             <div class="nav-wrapper">
-                <a class="navbar-brand center" href="../admin/homepage">{{ c.EVENT_NAME }}</a>
+              <a href="../common/" class="brand-logo">{{c.EVENT_NAME}}</a>
+              <ul id="nav-mobile" class="right hide-on-med-and-down">
+                  {% if c.CURRENT_ADMIN %}
+                    <li><a class="dropdown-button" href="#!" data-beloworigin="true" data-activates="adminDropdown">{{c.CURRENT_ADMIN.first_name}} {{c.CURRENT_ADMIN.last_name}}<i class="fa fa-arrow-circle-down right"></i></a></li>
+                  {% else %}
+                    <li><a href="../admin/login">Login</a></li>
+                  {% endif %}
+              </ul>
             </div>
-            <ul class="right">
-                <li><a href="https://github.com/magfest/ubersystem/issues"><i title="Report A Bug" class="fa fa-book"></i></a></li>
-                        <li><a href="../admin/sitemap"><span title="Site Map" class="fa fa-road"></span></a></li>
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                <span>Log In</span>
-                            </a>
-                            {% if c.CURRENT_ADMIN %}
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                <span>Logged in as: {{ c.CURRENT_ADMIN.first_name }} {{ c.CURRENT_ADMIN.last_name }}</span> <span title="Account Settings" class="glyphicon glyphicon-cog"></span><span class="caret"></span>
-                            </a>
-                            <ul class="dropdown-menu" role="menu">
-                                <li><a href="../admin/change_password">Change Password</a></li>
-                                <li><a href="../admin/logout">Logout</a></li>
-                            </ul>
-                            {% endif %}
-                        </li>
-            </ul>
-        </nav>
+          </nav>
+
 
         {% endblock %}
         {% block header %}{% endblock %}
