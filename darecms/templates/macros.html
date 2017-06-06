@@ -38,8 +38,38 @@ return "<a onClick='{inner_text}' href='{self.href}'>{self.text}</a>".format(inn
 {% macro card(header, content, card_css='blue-grey darken-1', content_css='white-text') -%}
     <div class="card {{ card_css }}">
         <div class="card-content {{ content_css }}">
-          <span class="card-title">{{ header }}</span>
-          <p>{{content}}</p>
+          <span class="card-title">{{ header|safe }}</span>
+          <p>{{content|safe}}</p>
         </div>
     </div>
+{%- endmacro %}
+
+{% macro checkgroup(model, field_name, no_instance=False) -%}
+    {%- set defaults = model[field_name] if not no_instance else None -%}
+    {%- set defaults = defaults.split(",") if defaults else [] -%}
+    {% for num, desc in model.get_field(field_name).type.choices -%}
+        <label style="font-weight: normal;">
+            <input type="checkbox" name="{{ field_name }}" value="{{ num }}" {% if num|string in defaults %}checked{% endif %} />
+            {{ desc }}
+        </label>
+        {% if not loop.last %}&nbsp;&nbsp;{% endif %}
+    {% endfor %}
+{%- endmacro %}
+
+
+{% macro nav_menu(model, current_page_path) -%}
+    {% if not model.is_new -%}
+        <table class="menu"><tr>
+        {% for href, label, display in varargs|batch(3, False) if display %}
+            {% set href = href.format(**model.__dict__) %}
+            <td width="{{ 100 // loop.length }}%">
+                {%- if current_page_path.endswith(href.split('?')[0]) -%}
+                    {{ label }}
+                {%- else -%}
+                    <a href="{{ href }}">{{ label }}</a>
+                {%- endif -%}
+            </td>
+        {% endfor %}
+        </tr></table>
+    {%- endif %}
 {%- endmacro %}

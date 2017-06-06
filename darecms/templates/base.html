@@ -21,6 +21,7 @@
         </script>
 
         <script type="text/javascript" src="../static/js/jquery-3.2.1.min.js"></script>
+        <script type="text/javascript" src="../static/js/jquery.form.min.js"></script>
         <script type="text/javascript" src="../static/js/toastr.min.js"></script>
         <script type="text/javascript" src="../static/js/materialize.min.js"></script>
 
@@ -73,20 +74,90 @@
         {% block backlink %}
         <ul id="adminDropdown" class="dropdown-content">
           <li><a href="#!">Inbox</a></li>
-          <li><a href="../admin/change_password">Account</a></li>
+            <li class="divider"></li>
+          <li><a href="../accounts/change_password">Account</a></li>
           <li class="divider"></li>
-          <li><a href="../admin/logout">Log Out</a></li>
+          <li><a href="../accounts/logout">Log Out</a></li>
+        </ul>
+        <ul id="adminDropdownMobile" class="dropdown-content">
+          <li><a href="#!">Inbox</a></li>
+          <li><a href="../accounts/change_password">Account</a></li>
+          <li class="divider"></li>
+          <li><a href="../accounts/logout">Log Out</a></li>
         </ul>
           <nav>
-            <div class="nav-wrapper">
-              <a href="../common/" class="brand-logo">{{c.EVENT_NAME}}</a>
+            <div class="nav-wrapper red darken-3">
+              <a href="../common/" class="brand-logo">{{c.ORGANIZATION_NAME}}</a>
+                <a href="#" data-activates="mobile-nav" class="button-collapse right"><i class="fa fa-bars fa-3x"></i></a>
               <ul id="nav-mobile" class="right hide-on-med-and-down">
+                  {% block mainmenu %}
+                        {% block mainmenu_items %}
+                        {% for menu_item in c.MENU_FILTERED_BY_ACCESS_LEVELS.submenu %}
+                            {% if menu_item.href %}
+                                <li><a href="{{ menu_item.href }}">{{ menu_item.name }}</a></li>
+                            {% elif menu_item.submenu %}
+                                <li>
+                                    <a class="dropdown-button" href="#!" data-beloworigin="true" data-activates="submenu-{{menu_item.name}}">
+                                        {{ menu_item.name }}<i class="fa fa-arrow-circle-down right"></i>
+                                    </a>
+                                </li>
+
+                                    <ul id="submenu-{{menu_item.name}}" class="dropdown-content">
+                                    {% for submenu_item in menu_item.submenu %}
+                                        <li>
+                                            {% if submenu_item.href %}
+                                                <a href="{{ submenu_item.href }}">
+                                            {% else %}
+                                                <a class="disabled">
+                                            {% endif %}
+                                            {{ submenu_item.name }}</a>
+                                        </li>
+                                    {% endfor %}
+                                    </ul>
+
+                            {% endif %}
+                        {% endfor %}
+                        {% endblock mainmenu_items %}
+                    {% endblock mainmenu %}
                   {% if c.CURRENT_ADMIN %}
                     <li><a class="dropdown-button" href="#!" data-beloworigin="true" data-activates="adminDropdown">{{c.CURRENT_ADMIN.first_name}} {{c.CURRENT_ADMIN.last_name}}<i class="fa fa-arrow-circle-down right"></i></a></li>
                   {% else %}
-                    <li><a href="../admin/login">Login</a></li>
+                    <li><a href="../accounts/login">Login</a></li>
                   {% endif %}
               </ul>
+                <ul class="side-nav" id="mobile-nav">
+                        {% for menu_item in c.MENU_FILTERED_BY_ACCESS_LEVELS.submenu %}
+                            {% if menu_item.href %}
+                                <li><a href="{{ menu_item.href }}">{{ menu_item.name }}</a></li>
+                            {% elif menu_item.submenu %}
+                                <li>
+                                    <a class="dropdown-button" href="#!" data-beloworigin="true" data-activates="submenuMobile-{{menu_item.name}}">
+                                        {{ menu_item.name }}<i class="fa fa-arrow-circle-down right"></i>
+                                    </a>
+                                </li>
+
+                                    <ul id="submenuMobile-{{menu_item.name}}" class="dropdown-content">
+                                    {% for submenu_item in menu_item.submenu %}
+                                        <li>
+                                            {% if submenu_item.href %}
+                                                <a href="{{ submenu_item.href }}">
+                                            {% else %}
+                                                <a class="disabled">
+                                            {% endif %}
+                                            {{ submenu_item.name }}</a>
+                                        </li>
+                                    {% endfor %}
+                                    </ul>
+
+                            {% endif %}
+                        {% endfor %}
+                  {% if c.CURRENT_ADMIN %}
+                    <li><a class="dropdown-button" href="#!" data-beloworigin="true" data-activates="adminDropdownMobile">{{c.CURRENT_ADMIN.first_name}} {{c.CURRENT_ADMIN.last_name}}<i class="fa fa-arrow-circle-down right"></i></a></li>
+                  {% else %}
+                    <li><a href="../accounts/login">Login</a></li>
+                  {% endif %}
+                </ul>
+
             </div>
           </nav>
 
@@ -103,6 +174,13 @@
             <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
             <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
         <![endif]-->
+        <script>
+            $(document).ready(function(){
+                  $(".button-collapse").sideNav();
+                {% block jquery_ready %}
+                {% endblock %}
+            });
+        </script>
     {% endblock %}
 </body>
 </html>

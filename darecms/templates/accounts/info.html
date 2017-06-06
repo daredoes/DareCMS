@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Login{% endblock %}
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <form class="col s12" role="form" method="post" action="info">
+            <div class="row">
+                  <h2 class="form-signin-heading">User Account Information</h2>
+                  {% if user %}
+
+                <div class="col s6 input-field">
+                    <label for="first_name">First Name</label>
+                    <input type="text" class="form-control" placeholder="First Name" id="first_name" name="first_name"
+                         value="{{ user.first_name }}" required/>
+                </div>
+                <div class="col s6 input-field">
+                    <label for="last_name">Last Name</label>
+                    <input type="text" class="form-control" placeholder="First Name" id="last_name" name="first_name"
+                         value="{{ user.last_name }}" required/>
+                </div>
+                <div class="col s11 input-field">
+                    <label for="email">Email</label>
+                    <input type="email" class="form-control" placeholder="Email address" id="email" name="email"
+                        value="{{ user.email }}" required />
+                </div>
+                <div class="col s1 input-field">
+                    <input type="checkbox" class="filled-in" id="verified" checked="{{user.verified}}" />
+                    <label for="verified">Verified</label>
+                </div>
+                <input type="hidden" name="original_location" value="{{ original_location }}" />
+                <input type="hidden" name="id" value="{{user.id}}" />
+                  {% endif %}
+                <button class="btn btn-lg btn-primary btn-block" type="submit">Save Changes</button>
+
+                <div class="text-center">
+                <!--<a href="reset">Forgot your password?</a>-->
+                </div>
+                <br>
+                <div class="well">
+                    Note: If you are a user wanting to sign
+                    up for an account, you may <a href="#">do so here</a>.
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

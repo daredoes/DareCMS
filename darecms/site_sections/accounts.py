@@ -12,8 +12,13 @@ def valid_password(password, account):
 
 @all_renderable()
 class Root:
-    def index(self):
-        return {}
+    def index(self, session, message=''):
+        return {
+            'message':  message,
+            'accounts': session.query(AdminAccount).join(User)
+                               .order_by(User.last_first).all(),
+            'AdminAccount': AdminAccount
+        }
 
     @unrestricted
     def insert_test_admin(self, session):
@@ -52,6 +57,20 @@ class Root:
         if not cherrypy.session.get('account_id'):
             raise HTTPRedirect('login?message={}', 'You are not logged in')
         return {'message': message}
+
+    @unrestricted
+    def info(self, session, message='', id='', **params):
+        try:
+            user = session.query(User).filter(User.id == id).first()
+        except sqlalchemy.exc.StatementError:
+            user = None
+        if not user:
+            user = c.CURRENT_ADMIN
+        return {
+            'user': user,
+            'message': message
+        }
+
 
     @unrestricted
     def error(self, session, message=''):

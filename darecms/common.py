@@ -35,15 +35,19 @@ from time import sleep, mktime
 from io import StringIO, BytesIO
 from itertools import chain, count
 from collections import defaultdict, OrderedDict
-from urllib.parse import quote, urlparse, quote_plus, parse_qsl, urljoin
+from urllib.parse import quote, urlparse, quote_plus, parse_qsl, urljoin, urlencode
 from datetime import date, time, datetime, timedelta
 from threading import Thread, RLock, local, current_thread
+from types import FunctionType
 from os.path import abspath, basename, dirname, exists, join
+import requests
+
 
 import pytz
 import bcrypt
 import cherrypy
 import jinja2
+from markupsafe import text_type, Markup
 from pytz import UTC
 
 import sqlalchemy
@@ -71,6 +75,9 @@ from darecms.jinja import *
 from darecms.decorators import *
 from darecms.models import *
 from darecms.automated_emails import *
+from darecms.menu import *
+from darecms import custom_tags
 from darecms import model_checks
 from darecms import server
+from darecms import sep_commands
 import darecms.api
