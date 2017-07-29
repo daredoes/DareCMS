@@ -9,8 +9,9 @@
     {% block head_styles %}
         <link rel="stylesheet" href="../static/css/materialize.min.css" />
         <link rel="stylesheet" href="../static/css/font-awesome.min.css" />
-        <link rel="stylesheet" href="../static/css/toastr.min.css" />
-        <link rel="stylesheet" href="../static/css/custom.css" />
+        <link rel="stylesheet" href="../static/css/mbox-0.0.1.min.css" />
+        <!--<link rel="stylesheet" href="../static/css/toastr.min.css" />-->
+
         {% if admin_area %}
         {% endif %}
     {% endblock %}
@@ -22,7 +23,8 @@
 
         <script type="text/javascript" src="../static/js/jquery-3.2.1.min.js"></script>
         <script type="text/javascript" src="../static/js/jquery.form.min.js"></script>
-        <script type="text/javascript" src="../static/js/toastr.min.js"></script>
+        <script type="text/javascript" src="../static/js/mbox-0.0.1.min.js"></script>
+        <!--<script type="text/javascript" src="../static/js/toastr.min.js"></script>-->
         <script type="text/javascript" src="../static/js/materialize.min.js"></script>
 
         <script type="text/javascript">
@@ -31,10 +33,10 @@
                 $(window).on('load', function() {
                     $(".loader").fadeOut("fast");
                 });
-                toastr.options = {
+                /*toastr.options = {
                     closeButton: true,
                     debug: false,
-                    positionClass: "toast-top-full-width",
+                    positionClass: "toast-top-center",
                     onclick: null,
                     showDuration: "300",
                     hideDuration: "1000",
@@ -44,9 +46,10 @@
                     hideEasing: "linear",
                     showMethod: "fadeIn",
                     hideMethod: "fadeOut"
-                };
+                };*/
                 if (message.length) {
-                    toastr.info(message);
+                    //toastr.info(message);
+                    Materialize.toast(message, 30000, 'cyan z-depth-4');
                 }
                 $('.focus:first').focus();
 
@@ -73,15 +76,15 @@
     <div id="mainContainer" class="container-fluid">
         {% block backlink %}
         <ul id="adminDropdown" class="dropdown-content">
-          <li><a href="#!">Inbox</a></li>
+          <li><a href="../accounts/form?id={{c.CURRENT_ADMIN.id}}">Account</a></li>
             <li class="divider"></li>
-          <li><a href="../accounts/change_password">Account</a></li>
+          <li><a href="../accounts/change_password">Change Password</a></li>
           <li class="divider"></li>
           <li><a href="../accounts/logout">Log Out</a></li>
         </ul>
         <ul id="adminDropdownMobile" class="dropdown-content">
-          <li><a href="#!">Inbox</a></li>
-          <li><a href="../accounts/change_password">Account</a></li>
+          <li><a href="../accounts/form?id={{c.CURRENT_ADMIN.id}}">Account</a></li>
+          <li><a href="../accounts/change_password">Change Password</a></li>
           <li class="divider"></li>
           <li><a href="../accounts/logout">Log Out</a></li>
         </ul>
@@ -94,23 +97,23 @@
                         {% block mainmenu_items %}
                         {% for menu_item in c.MENU_FILTERED_BY_ACCESS_LEVELS.submenu %}
                             {% if menu_item.href %}
-                                <li><a href="{{ menu_item.href }}">{{ menu_item.name }}</a></li>
+                                <li><a href="{{ menu_item.href|rerender }}">{{ menu_item.name|rerender }}</a></li>
                             {% elif menu_item.submenu %}
                                 <li>
-                                    <a class="dropdown-button" href="#!" data-beloworigin="true" data-activates="submenu-{{menu_item.name}}">
-                                        {{ menu_item.name }}<i class="fa fa-arrow-circle-down right"></i>
+                                    <a class="dropdown-button" href="#!" data-beloworigin="true" data-activates="submenu-{{menu_item.name|rerender|replace(' ', '_') }}">
+                                        {{ menu_item.name|rerender }}<i class="fa fa-arrow-circle-down right"></i>
                                     </a>
                                 </li>
 
-                                    <ul id="submenu-{{menu_item.name}}" class="dropdown-content">
+                                    <ul id="submenu-{{menu_item.name|rerender|replace(' ', '_') }}" class="dropdown-content">
                                     {% for submenu_item in menu_item.submenu %}
                                         <li>
                                             {% if submenu_item.href %}
-                                                <a href="{{ submenu_item.href }}">
+                                                <a href="{{ submenu_item.href|rerender }}">
                                             {% else %}
                                                 <a class="disabled">
                                             {% endif %}
-                                            {{ submenu_item.name }}</a>
+                                            {{ submenu_item.name|rerender }}</a>
                                         </li>
                                     {% endfor %}
                                     </ul>
@@ -119,43 +122,35 @@
                         {% endfor %}
                         {% endblock mainmenu_items %}
                     {% endblock mainmenu %}
-                  {% if c.CURRENT_ADMIN %}
-                    <li><a class="dropdown-button" href="#!" data-beloworigin="true" data-activates="adminDropdown">{{c.CURRENT_ADMIN.first_name}} {{c.CURRENT_ADMIN.last_name}}<i class="fa fa-arrow-circle-down right"></i></a></li>
-                  {% else %}
-                    <li><a href="../accounts/login">Login</a></li>
-                  {% endif %}
+
               </ul>
                 <ul class="side-nav" id="mobile-nav">
                         {% for menu_item in c.MENU_FILTERED_BY_ACCESS_LEVELS.submenu %}
                             {% if menu_item.href %}
-                                <li><a href="{{ menu_item.href }}">{{ menu_item.name }}</a></li>
+                                <li><a href="{{ menu_item.href|rerender }}">{{ menu_item.name|rerender }}</a></li>
                             {% elif menu_item.submenu %}
                                 <li>
-                                    <a class="dropdown-button" href="#!" data-beloworigin="true" data-activates="submenuMobile-{{menu_item.name}}">
-                                        {{ menu_item.name }}<i class="fa fa-arrow-circle-down right"></i>
+                                    <a class="dropdown-button" href="#!" data-beloworigin="true" data-activates="submenuMobile-{{menu_item.name|rerender|replace(' ', '_') }}">
+                                        {{ menu_item.name|rerender }}<i class="fa fa-arrow-circle-down right"></i>
                                     </a>
                                 </li>
 
-                                    <ul id="submenuMobile-{{menu_item.name}}" class="dropdown-content">
+                                    <ul id="submenuMobile-{{menu_item.name|rerender|replace(' ', '_') }}" class="dropdown-content">
                                     {% for submenu_item in menu_item.submenu %}
                                         <li>
                                             {% if submenu_item.href %}
-                                                <a href="{{ submenu_item.href }}">
+                                                <a href="{{ submenu_item.href|rerender }}">
                                             {% else %}
                                                 <a class="disabled">
                                             {% endif %}
-                                            {{ submenu_item.name }}</a>
+                                            {{ submenu_item.name|rerender }}</a>
                                         </li>
                                     {% endfor %}
                                     </ul>
 
                             {% endif %}
                         {% endfor %}
-                  {% if c.CURRENT_ADMIN %}
-                    <li><a class="dropdown-button" href="#!" data-beloworigin="true" data-activates="adminDropdownMobile">{{c.CURRENT_ADMIN.first_name}} {{c.CURRENT_ADMIN.last_name}}<i class="fa fa-arrow-circle-down right"></i></a></li>
-                  {% else %}
-                    <li><a href="../accounts/login">Login</a></li>
-                  {% endif %}
+
                 </ul>
 
             </div>
@@ -177,6 +172,20 @@
         <script>
             $(document).ready(function(){
                   $(".button-collapse").sideNav();
+                $('.ajaxForm').ajaxForm({
+                    data:{
+                        csrf_token: csrf_token
+                    },
+                    success:function(result, status, xhr){
+                        alert(result.message);
+                    },
+                    resetForm: true,
+                    dataType: 'json',
+                    method: 'POST',
+                    error: function(result){
+                        alert(result.message);
+                    }
+                });
                 {% block jquery_ready %}
                 {% endblock %}
             });

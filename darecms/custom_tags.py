@@ -298,3 +298,10 @@ def random_hash():
     random = os.urandom(16)
     result = binascii.hexlify(random)
     return result.decode("utf-8")
+
+@JinjaEnv.jinja_filter
+def rerender(value):
+    data = renderable_data()
+    template = jinja2.Template(value)
+    rendered = template.render(data)
+    return rendered

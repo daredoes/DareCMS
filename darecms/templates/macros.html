@@ -44,15 +44,17 @@ return "<a onClick='{inner_text}' href='{self.href}'>{self.text}</a>".format(inn
     </div>
 {%- endmacro %}
 
-{% macro checkgroup(model, field_name, no_instance=False) -%}
+{% macro checkgroup(model, field_name, no_instance=False, column_css='s6 m3') -%}
     {%- set defaults = model[field_name] if not no_instance else None -%}
     {%- set defaults = defaults.split(",") if defaults else [] -%}
     {% for num, desc in model.get_field(field_name).type.choices -%}
-        <label style="font-weight: normal;">
-            <input type="checkbox" name="{{ field_name }}" value="{{ num }}" {% if num|string in defaults %}checked{% endif %} />
-            {{ desc }}
-        </label>
+    {% set id_add = range(1, 999)|random %}
+    <div class="col {{ column_css }}">
+            <input id="{{ id_add }}{{ model.id if no_instance else '0' }}" type="checkbox" name="{{ field_name }}" value="{{ num }}" {% if num|string in defaults %}checked{% endif %} />
+
+        <label for="{{ id_add }}{{ model.id if no_instance else '0' }}" style="font-weight: normal;">{{ desc }}</label>
         {% if not loop.last %}&nbsp;&nbsp;{% endif %}
+    </div>
     {% endfor %}
 {%- endmacro %}
 
@@ -72,4 +74,9 @@ return "<a onClick='{inner_text}' href='{self.href}'>{self.text}</a>".format(inn
         {% endfor %}
         </tr></table>
     {%- endif %}
+{%- endmacro %}
+
+{% macro input(name, type='text', css='', label='', extra='', placeholder='', value='') -%}
+{% if label != '' %}<label for="{{name}}">{{label}}{% endif %}
+<input type="{{type}}" id="{{name}}" name="{{name}}" class="{{css}}" placeholder="{{placeholder}}" value="{{value}}" {{extra}} />
 {%- endmacro %}

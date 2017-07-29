@@ -8,36 +8,56 @@ table form {
 }
 </style>
 
-<ol class="breadcrumb">
-  <li><a href="../accounts/homepage">Home</a></li>
-  <li class="active">Accounts</li>
-</ol>
-
-<div class="panel panel-default">
+<div class="row">
+    <div class="col s12 l3 right">
+<div class="card grey lighten-4">
+<div class="card-content panel-default">
   <div class="panel-heading">
     <h3 class="panel-title">New Account</h3>
   </div>
-  <div class="panel-body">
-    <form id="new_admin" method="post" action="update" onsubmit="return check_passwords()" role="form" class="form-inline">
-      <input type="hidden" name="id" value="None" />
-      {{ csrf_token() }}
 
-      <div class="form-group">
+    <form id="new_admin" method="post" action="update" onsubmit="return check_passwords()" role="form" class="form-inline">
+      {{ csrf_token() }}
+        <div class="row">
+            <div class="input-field col s12">
+                <select name="user_id">
+                <option value="" disabled selected>Choose A User</option>
+                {% for user in users %}
+
+                    {% if user.last_first %}
+                <option value="{{user.id}}">{{user.last_first}}</option>
+                    {% endif %}
+                {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="row">
+      <div class="col s6 l12">
         <label for="password" class="sr-only">Password</label>
         <div class="input-group">
           <input type="password" class="form-control" id="password" name="password" placeholder="Password">
            <span class="input-group-addon"><span class="glyphicon glyphicon-ban-circle"></span></span>
         </div>
+          </div>
+            <div class="col s6 l12">
         <input type="password" class="form-control" id="check-password" name="check-password" placeholder="Re-enter Password">
+                </div>
       </div>
-      <div class="form-group">
-        {{ macros.checkgroup(AdminAccount, 'access', no_instance=True) }}
-      </div>
-      <button type="submit" class="btn btn-default">Create Account</button>
+
+        <div class="row">
+        {{ macros.checkgroup(AdminAccount, 'access', no_instance=True, column_css='s6') }}
+        </div>
+        <div class="row">
+            <div class="col s6">
+      <button type="submit" class="btn btn-default">Create</button>
+                </div>
+            </div>
     </form>
   </div>
 </div>
+</div>
 
+<div class="col s12 l9">
 <div class="panel panel-default">
   <div class="panel-heading">
     <h3 class="panel-title">Existing Accounts</h3>
@@ -62,20 +82,20 @@ table form {
             <form class="form update-form" method="post" action="update">
               <input type="hidden" name="id" value="{{ account.id }}" />
               {{ csrf_token() }}
-              <div class="form-group">{{ macros.checkgroup(account, 'access') }}</div>
+              <div class="form-group">{{ macros.checkgroup(account, 'access', column_css='col s6') }}</div>
             </form>
           </td>
           <td>
             <a href="update_password_of_other?id={{account.id}}">Change Password</a>
           </td>
           <td class="text-nowrap">
-            <button type="submit" class="btn btn-sm btn-primary update-button">
+            <button type="submit" class="btn btn-sm btn-primary update-button fa fa-floppy-o">
               <span class="glyphicon glyphicon-ok"></span>
             </button>
             <form class="form delete-form" method="post" action="delete">
               {{ csrf_token() }}
               <input type="hidden" name="id" value="{{ account.id }}" />
-              <button type="submit" type="button" class="btn btn-sm btn-danger delete-button" data-last_first="{{ account.user.last_first }}">
+              <button type="submit" type="button" class="btn btn-sm btn-danger delete-button fa fa-trash-o" data-last_first="{{ account.user.last_first }}">
                 <span class="glyphicon glyphicon-trash"></span>
               </button>
             </form>
@@ -86,6 +106,11 @@ table form {
     </table>
   </div>
 </div>
+</div>
+
+</div>
+
+
 
 <script>
 function check_passwords() {
@@ -97,6 +122,8 @@ function check_passwords() {
 }
 
 $(document).ready(function() {
+    $('select').material_select();
+
     $('table').on('click', '.delete-button', function (event) {
         event.preventDefault();
         var $self = $(this),

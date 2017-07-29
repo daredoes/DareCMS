@@ -435,6 +435,38 @@ class Session(SessionManager):
         def verified_users(self):
             return self.query(User).filter(User.verificatio_status != c.INVALID_STATUS)
 
+        def search(self, text, *filters):
+            users = self.query(User).filter(*filters)
+            if ':' in text:
+                target, term = text.split(':', 1)
+                if target == 'email':
+                    return users.icontains(User.normalized_email, User.normalize_email(term))
+
+            terms = text.split()
+            if len(terms) == 2:
+                first, last = terms
+                if first.endswith(','):
+                    last, first = first.strip(','), last
+                name_cond = users.icontains_condition(first_name=first, last_name=last)
+                legal_name_cond = users.icontains_condition(legal_name="{}%{}".format(first, last))
+                return users.filter(or_(name_cond, legal_name_cond))
+            elif len(terms) == 1 and terms[0].endswith(','):
+                last = terms[0].rstrip(',')
+                name_cond = users.icontains_condition(last_name=last)
+                # Known issue: search may include first name if legal name is set
+                legal_name_cond = users.icontains_condition(legal_name=last)
+                return users.filter(or_(name_cond, legal_name_cond))
+            elif len(terms) == 1 and terms[0].isdigit():
+                if len(terms[0]) == 10:
+                    return users.filter(or_(User.ec_phone == terms[0], User.cellphone == terms[0]))
+            elif len(terms) == 1 and re.match('^[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}$', terms[0]):
+                return users.filter(or_(User.id == terms[0], User.public_id == terms[0]))
+
+            checks = []
+            for attr in ['first_name', 'last_name',  'email', 'comments', 'admin_notes']:
+                checks.append(getattr(User, attr).ilike('%' + text + '%'))
+            return users.filter(or_(*checks))
+
         def insert_test_admin_account(self):
             """
             insert a test admin into the database with username "magfest@example.com" password "magfest"
@@ -559,6 +591,14 @@ class User(MainModel):
     @property
     def banned(self):
         return listify(self.watch_list or self.watchlist_guess)
+
+    @property
+    def age(self):
+        if self.birthdate:
+            date = sa.localized_now().date()
+            return (date - self.birthdate).days // 365.2425
+        else:
+            return 0
 
 class WatchList(MainModel):
     first_names     = Column(UnicodeText)

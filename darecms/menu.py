@@ -76,9 +76,12 @@ c.MENU = MenuItem(name='Root', submenu=[
     MenuItem(name='Accounts', href='../accounts/', access=c.ACCOUNTS),
 
     MenuItem(name='People', access=[c.ACCOUNTS], submenu=[
-        MenuItem(name='Groups', href='../groups/'),
-        MenuItem(name='All Untaken Shifts', access=c.PEOPLE, href='../jobs/everywhere'),
-        MenuItem(name='Jobs', access=c.PEOPLE, href='../jobs/'),
-        MenuItem(name='Feed of Database Changes', href='../registration/feed'),
+        MenuItem(name='All Users', href='../accounts/all'),
     ]),
+    MenuItem(name='{{ c.CURRENT_ADMIN.first_name }} {{ c.CURRENT_ADMIN.last_name }}', access=[c.ACCOUNTS], submenu=[
+        MenuItem(name='Change Password', href='../accounts/change_password'),
+        MenuItem(name='Edit Info', href='../accounts/form?id={{ c.CURRENT_ADMIN.id }}')
+    ]),
+    MenuItem(name='{{ "Logout" if c.CURRENT_ADMIN else "Login" }}',
+                 href='{{ "../accounts/logout" if c.CURRENT_ADMIN else "../accounts/login" }}')
 ])

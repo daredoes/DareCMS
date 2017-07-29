@@ -2,18 +2,23 @@
 {% block title %}Site Map{% endblock %}
 {% block content %}
 
-<div class="page-header"><h1>Site Map</h1></div>
+<div class="page-header"><h1 class="center">Site Map</h1></div>
 
+<div class="row">
 {% for section, pagelist in pages %}
-    <div class="panel panel-default">
-    <div class="panel-heading"><a href="../{{ section }}/index">{{ section|title }}</a></div>
-        <ul class="nav nav-pills">
-        {% for page in pagelist %}
-            <li><a href="..{{ page.path }}">{{ page.name }}</a></li>
-        {% endfor %}
-        </ul>
+    <div class="col s12 m6 l4">
+        <div class="card grey lighten-4">
+            <div class="card-content black-text">
+                <span class="card-title center"><a href="../{{ section}}/index">{{ section|title }}</a></span>
+                <p class="center">
+                    {% for page in pagelist %}
+                        <a href="..{{ page.path }}">{{ page.name }}</a>{{ ", " if not loop.last }}
+                    {% endfor %}
+                </p>
+            </div>
+        </div>
     </div>
 {% endfor %}
-
 </div>
+
 {% endblock %}

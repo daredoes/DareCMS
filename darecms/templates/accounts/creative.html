@@ -1,0 +1,141 @@
+{% import 'macros.html' as macros %}
+<!DOCTYPE HTML>
+<html>
+<head>
+    {{ macros.ie7_compatibility_check() }}
+    <title>{{ c.SITE_NAME }} - {% block title %}{% endblock %}</title>
+    <link rel="icon" href="../static/images/favicon.png" type="image/x-icon" />
+
+    {% block head_styles %}
+        <link rel="stylesheet" href="../static/css/materialize.min.css" />
+        <link rel="stylesheet" href="../static/css/font-awesome.min.css" />
+        <!--<link rel="stylesheet" href="../static/css/toastr.min.css" />-->
+
+        {% if admin_area %}
+        {% endif %}
+    {% endblock %}
+
+    {% block head_javascript %}
+        <script>
+            var message = '{{ message|e }}';
+        </script>
+
+        <script type="text/javascript" src="../static/js/jquery-3.2.1.min.js"></script>
+        <script type="text/javascript" src="../static/js/jquery.form.min.js"></script>
+        <!--<script type="text/javascript" src="../static/js/toastr.min.js"></script>-->
+        <script type="text/javascript" src="../static/js/materialize.min.js"></script>
+
+        <script type="text/javascript">
+            var csrf_token = '{{ c.CSRF_TOKEN }}';
+            $(function() {
+                $(window).on('load', function() {
+                    $(".loader").fadeOut("fast");
+                });
+                /*toastr.options = {
+                    closeButton: true,
+                    debug: false,
+                    positionClass: "toast-top-center",
+                    onclick: null,
+                    showDuration: "300",
+                    hideDuration: "1000",
+                    timeOut: "0",
+                    extendedTimeOut: "0",
+                    showEasing: "swing",
+                    hideEasing: "linear",
+                    showMethod: "fadeIn",
+                    hideMethod: "fadeOut"
+                };*/
+                if (message.length) {
+                    //toastr.info(message);
+                    Materialize.toast(message, 30000, 'cyan z-depth-4');
+                }
+                $('.focus:first').focus();
+
+            });
+        </script>
+    {% endblock %}
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+    {% block top_of_body_additional %}
+        <!--{% if admin_area %}
+            <div id="floating_logo">
+                <img src="../static/theme/bg-logo.png"/>
+            </div>
+            {% if c.DEV_BOX %}
+                <div id="devbox_cautiontape"></div>
+                <div id="devbox_text">DEVELOPMENT</div>
+            {% endif %}
+        {% endif %}-->
+    {% endblock %}
+    <div class="mainContainer">
+        <div class="row">
+            <div class="col s3">
+                <div class="row">
+                    <div class="col s12">
+                        <a href="#"><h1>WIMP</h1> </a>
+                    </div>
+                    <div class="col s12">
+                        <a href="#">
+                        <h1>
+                            Weed
+                        </h1>
+                        <h1>
+                            Indexing
+                        </h1>
+                        <h1>
+                            Menu
+                        </h1>
+                        <h1>
+                            Program
+                        </h1>
+                            </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col s9">
+                <div class="row">
+                    <div class="col s12">
+                        <a href="#"><h1>Weed Indexing Menu Program<h1></a>
+                    </div>
+                    <div class="col s12">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% block scripts %}
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+            <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
+        <script>
+            $(document).ready(function(){
+                  $(".button-collapse").sideNav();
+                $('.ajaxForm').ajaxForm({
+                    data:{
+                        csrf_token: csrf_token
+                    },
+                    success:function(result, status, xhr){
+                        alert(result.message);
+                    },
+                    resetForm: true,
+                    dataType: 'json',
+                    method: 'POST',
+                    error: function(result){
+                        alert(result.message);
+                    }
+                });
+                {% block jquery_ready %}
+                {% endblock %}
+            });
+        </script>
+    {% endblock %}
+</body>
+</html>

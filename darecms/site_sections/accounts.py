@@ -10,14 +10,107 @@ def valid_password(password, account):
     return any(bcrypt.hashpw(password.encode('utf-8'), hashed.encode('utf-8')) == hashed.encode('utf-8') for hashed in all_hashed)
 
 
-@all_renderable()
+@all_renderable(c.ACCOUNTS)
 class Root:
     def index(self, session, message=''):
         return {
             'message':  message,
-            'accounts': session.query(AdminAccount).join(User)
-                               .order_by(User.last_first).all(),
-            'AdminAccount': AdminAccount
+            'accounts': session.query(AdminAccount).join(User).order_by(User.last_first).all(),
+            'AdminAccount': AdminAccount,
+            'users': session.query(User).filter(User.admin_account == None).order_by(User.last_first).all()
+        }
+
+    @csrf_protected
+    def update(self, session, password='', message='', **params):
+        account = session.admin_account(params, checkgroups=['access'])
+        if account.is_new:
+                password = password if password else genpasswd()
+                account.hashed = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+
+        message = message or check(account)
+        if not message:
+            message = 'Account settings uploaded'
+            account.user = session.user(account.user_id)   # dumb temporary hack, will fix later with tests
+            session.add(account)
+            if account.is_new:
+                body = render('emails/accounts/new_account.txt', {
+                    'account': account,
+                    'password': password
+                })
+                send_email(c.ADMIN_EMAIL, session.user(account.user_id).email, 'New ' + c.EVENT_NAME + ' Account', body)
+
+        raise HTTPRedirect('index?message={}', message)
+
+    @csrf_protected
+    def delete(self, session, id, return_to='', **params):
+        session.delete(session.user(id))
+        raise HTTPRedirect('{}?message={}', return_to if return_to else 'index', 'Account deleted')
+
+    @site_mappable
+    def all(self, session, message='', page='0', search_text='', uploaded_id='', order='last_first', invalid='', **params):
+        # DEVELOPMENT ONLY: it's an extremely convenient shortcut to show the first page
+        # of search results when doing testing. it's too slow in production to do this by
+        # default due to the possibility of large amounts of reg stations accessing this
+        # page at once. viewing the first page is also rarely useful in production when
+        # there are thousands of attendees.
+        if c.DEV_BOX and not int(page):
+            page = 1
+        users = session.query(User)
+        total_count = users.count()
+        count = 0
+        search_text = search_text.strip()
+        if search_text:
+            users = session.search(search_text)
+            count = users.count()
+
+        users = users.order(order)
+
+        page = int(page)
+        if search_text:
+            page = page or 1
+            if search_text and count == total_count:
+                message = 'No matches found'
+            elif search_text and count == 1:
+                raise HTTPRedirect('form?id={}&message={}', users.one().id, 'This attendee was the only search result')
+
+        pages = range(1, int(math.ceil(count / 100)) + 1)
+        users = users[-100 + 100*page: 100*page] if page else []
+
+        return {
+            'message':        message if isinstance(message, str) else message[-1],
+            'page':           page,
+            'pages':          pages,
+            'invalid':        invalid,
+            'search_text':    search_text,
+            'search_results': bool(search_text),
+            'users':          users,
+            'order':          Order(order),
+            'user_count':     total_count,
+            'user':           session.user(uploaded_id, allow_invalid=True) if uploaded_id else None
+        }
+
+    def form(self, session, message='', return_to='', **params):
+        user = session.user(params, checkgroups=User.all_checkgroups, bools=User.all_bools)
+        if 'first_name' in params:
+            message = ''
+            if not message:
+                message = check(user)
+            session.add(user)
+            msg_text = '{} has been saved'.format(user.full_name)
+            if params.get('save') == 'save_return_to_search':
+                if return_to:
+                    raise HTTPRedirect(return_to + '&message={}', 'Attendee data saved')
+                else:
+                    raise HTTPRedirect('index?uploaded_id={}&message={}&search_text={}', user.id, msg_text,
+                        '{} {}'.format(user.first_name, user.last_name) if c.AT_THE_CON else '')
+            else:
+                raise HTTPRedirect('form?id={}&message={}&return_to={}', user.id, msg_text, return_to)
+
+
+            # session.commit()
+        return {
+            'message': message,
+            'user': user
         }
 
     @unrestricted
@@ -94,11 +187,8 @@ class Root:
                 method = getattr(module_root, name)
                 if getattr(method, 'exposed', False):
                     spec = inspect.getfullargspec(get_innermost(method))
-                    a = set(getattr(method, 'restricted', []) or [])
-                    d = AdminAccount.access_set()
-                    b = a.intersection(d)
-                    e = getattr(method, 'site_mappable', False)
                     if set(getattr(method, 'restricted', []) or []).intersection(AdminAccount.access_set()) \
+                            and not getattr(method, 'ajax', False) \
                             and (getattr(method, 'site_mappable', False)
                               or len([arg for arg in spec.args[1:] if arg != 'session']) == len(spec.defaults or []) and not spec.varkw):
                         pages[module_name].append({
@@ -150,3 +240,9 @@ class Root:
                 raise HTTPRedirect('homepage?message={}', 'Your password has been updated')
 
         return {'message': message}
+
+    @unrestricted
+    def creative(self):
+        return {
+
+        }

@@ -11,3 +11,6 @@ class Root:
         return {
             'message': params.get('message')
         }
+
+    def creative(self):
+        return {}
