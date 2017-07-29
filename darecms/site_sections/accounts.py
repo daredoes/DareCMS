@@ -106,8 +106,6 @@ class Root:
             else:
                 raise HTTPRedirect('form?id={}&message={}&return_to={}', user.id, msg_text, return_to)
 
-
-            # session.commit()
         return {
             'message': message,
             'user': user

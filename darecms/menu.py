@@ -73,15 +73,16 @@ class MenuItem:
 
 
 c.MENU = MenuItem(name='Root', submenu=[
-    MenuItem(name='Accounts', href='../accounts/', access=c.ACCOUNTS),
-
-    MenuItem(name='People', access=[c.ACCOUNTS], submenu=[
-        MenuItem(name='All Users', href='../accounts/all'),
+    MenuItem(name='Users', access=[c.ACCOUNTS], submenu=[
+        MenuItem(name='Add New', href='../accounts/form'),
+        MenuItem(name='All', href='../accounts/all'),
+        MenuItem(name='Admins', href='../accounts/'),
     ]),
     MenuItem(name='{{ c.CURRENT_ADMIN.first_name }} {{ c.CURRENT_ADMIN.last_name }}', access=[c.ACCOUNTS], submenu=[
         MenuItem(name='Change Password', href='../accounts/change_password'),
         MenuItem(name='Edit Info', href='../accounts/form?id={{ c.CURRENT_ADMIN.id }}')
     ]),
     MenuItem(name='{{ "Logout" if c.CURRENT_ADMIN else "Login" }}',
-                 href='{{ "../accounts/logout" if c.CURRENT_ADMIN else "../accounts/login" }}')
+             href='{{ "../accounts/logout" if c.CURRENT_ADMIN else "../accounts/login" }}'),
+    MenuItem(name="Sitemap", href="../accounts/sitemap")
 ])

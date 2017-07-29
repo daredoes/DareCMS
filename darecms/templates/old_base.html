@@ -1,0 +1,199 @@
+{% import 'macros.html' as macros %}
+<!DOCTYPE HTML>
+<html>
+<head>
+    {{ macros.ie7_compatibility_check() }}
+    <title>{{ c.SITE_NAME }} - {% block title %}{% endblock %}</title>
+    <link rel="icon" href="../static/images/favicon.png" type="image/x-icon" />
+
+    {% block head_styles %}
+        <link rel="stylesheet" href="../static/css/material.min.css" />
+        <link rel="stylesheet" href="../static/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="../static/css/mbox-0.0.1.min.css" />
+        <!--<link rel="stylesheet" href="../static/css/toastr.min.css" />-->
+
+        {% if admin_area %}
+        {% endif %}
+    {% endblock %}
+
+    {% block head_javascript %}
+        <script>
+            var message = '{{ message|e }}';
+        </script>
+
+        <script type="text/javascript" src="../static/js/jquery-3.2.1.min.js"></script>
+        <script type="text/javascript" src="../static/js/jquery.form.min.js"></script>
+        <script type="text/javascript" src="../static/js/mbox-0.0.1.min.js"></script>
+        <!--<script type="text/javascript" src="../static/js/toastr.min.js"></script>-->
+        <script type="text/javascript" src="../static/js/material.min.js"></script>
+
+        <script type="text/javascript">
+            var csrf_token = '{{ c.CSRF_TOKEN }}';
+            $(function() {
+                $(window).on('load', function() {
+                    $(".loader").fadeOut("fast");
+                });
+                /*toastr.options = {
+                    closeButton: true,
+                    debug: false,
+                    positionClass: "toast-top-center",
+                    onclick: null,
+                    showDuration: "300",
+                    hideDuration: "1000",
+                    timeOut: "0",
+                    extendedTimeOut: "0",
+                    showEasing: "swing",
+                    hideEasing: "linear",
+                    showMethod: "fadeIn",
+                    hideMethod: "fadeOut"
+                };*/
+                if (message.length) {
+                    //toastr.info(message);
+                    Materialize.toast(message, 30000, 'cyan z-depth-4');
+                }
+                $('.focus:first').focus();
+
+            });
+        </script>
+    {% endblock %}
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+
+     <!-- Add to homescreen for Chrome on Android -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="icon" sizes="192x192" href="../static/images/android-desktop.png">
+
+    <!-- Add to homescreen for Safari on iOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="{{ c.ORGANIZATION_NAME }}">
+    <link rel="apple-touch-icon-precomposed" href="../static/images/ios-desktop.png">
+
+    <!-- Tile icon for Win8 (144x144 + tile color) -->
+    <meta name="msapplication-TileImage" content="../static/images/touch/ms-touch-icon-144x144-precomposed.png">
+    <meta name="msapplication-TileColor" content="#3372DF">
+
+    <link rel="shortcut icon" href="../static/images/favicon.png">
+</head>
+<body>
+    {% block top_of_body_additional %}
+        <!--{% if admin_area %}
+            <div id="floating_logo">
+                <img src="../static/theme/bg-logo.png"/>
+            </div>
+            {% if c.DEV_BOX %}
+                <div id="devbox_cautiontape"></div>
+                <div id="devbox_text">DEVELOPMENT</div>
+            {% endif %}
+        {% endif %}-->
+    {% endblock %}
+    <div id="mainContainer" class="container-fluid">
+        {% block backlink %}
+          <nav>
+            <div class="nav-wrapper red darken-3">
+              <a href="../common/" class="brand-logo">{{c.ORGANIZATION_NAME}}</a>
+                <a href="#" data-activates="mobile-nav" class="button-collapse right"><i class="fa fa-bars fa-3x"></i></a>
+              <ul id="nav-mobile" class="right hide-on-med-and-down">
+                  {% block mainmenu %}
+                        {% block mainmenu_items %}
+                        {% for menu_item in c.MENU_FILTERED_BY_ACCESS_LEVELS.submenu %}
+                            {% if menu_item.href %}
+                                <li><a href="{{ menu_item.href|rerender }}">{{ menu_item.name|rerender }}</a></li>
+                            {% elif menu_item.submenu %}
+                                <li>
+                                    <a class="dropdown-button" href="#!" data-beloworigin="true" data-activates="submenu-{{menu_item.name|rerender|replace(' ', '_') }}">
+                                        {{ menu_item.name|rerender }}<i class="fa fa-arrow-circle-down right"></i>
+                                    </a>
+                                </li>
+
+                                    <ul id="submenu-{{menu_item.name|rerender|replace(' ', '_') }}" class="dropdown-content">
+                                    {% for submenu_item in menu_item.submenu %}
+                                        <li>
+                                            {% if submenu_item.href %}
+                                                <a href="{{ submenu_item.href|rerender }}">
+                                            {% else %}
+                                                <a class="disabled">
+                                            {% endif %}
+                                            {{ submenu_item.name|rerender }}</a>
+                                        </li>
+                                    {% endfor %}
+                                    </ul>
+
+                            {% endif %}
+                        {% endfor %}
+                        {% endblock mainmenu_items %}
+                    {% endblock mainmenu %}
+
+              </ul>
+                <ul class="side-nav" id="mobile-nav">
+                        {% for menu_item in c.MENU_FILTERED_BY_ACCESS_LEVELS.submenu %}
+                            {% if menu_item.href %}
+                                <li><a href="{{ menu_item.href|rerender }}">{{ menu_item.name|rerender }}</a></li>
+                            {% elif menu_item.submenu %}
+                                <li>
+                                    <a class="dropdown-button" href="#!" data-beloworigin="true" data-activates="submenuMobile-{{menu_item.name|rerender|replace(' ', '_') }}">
+                                        {{ menu_item.name|rerender }}<i class="fa fa-arrow-circle-down right"></i>
+                                    </a>
+                                </li>
+
+                                    <ul id="submenuMobile-{{menu_item.name|rerender|replace(' ', '_') }}" class="dropdown-content">
+                                    {% for submenu_item in menu_item.submenu %}
+                                        <li>
+                                            {% if submenu_item.href %}
+                                                <a href="{{ submenu_item.href|rerender }}">
+                                            {% else %}
+                                                <a class="disabled">
+                                            {% endif %}
+                                            {{ submenu_item.name|rerender }}</a>
+                                        </li>
+                                    {% endfor %}
+                                    </ul>
+
+                            {% endif %}
+                        {% endfor %}
+
+                </ul>
+
+            </div>
+          </nav>
+
+
+        {% endblock %}
+        {% block header %}{% endblock %}
+        {% block content %}{% endblock %}
+        <div id="bottomAnchor" /></div>
+    </div>
+    {% block scripts %}
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+            <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
+        <script>
+            $(document).ready(function(){
+                  $(".button-collapse").sideNav();
+                $('.ajaxForm').ajaxForm({
+                    data:{
+                        csrf_token: csrf_token
+                    },
+                    success:function(result, status, xhr){
+                        alert(result.message);
+                    },
+                    resetForm: true,
+                    dataType: 'json',
+                    method: 'POST',
+                    error: function(result){
+                        alert(result.message);
+                    }
+                });
+                {% block jquery_ready %}
+                {% endblock %}
+            });
+        </script>
+    {% endblock %}
+</body>
+</html>
