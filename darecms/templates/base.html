@@ -10,6 +10,10 @@
         <link rel="stylesheet" href="../static/css/materialize.min.css" />
         <link rel="stylesheet" href="../static/css/font-awesome.min.css" />
         <link rel="stylesheet" href="../static/css/mbox-0.0.1.min.css" />
+        <link rel="stylesheet" href="../static/css/custom.css" />
+    <link rel="stylesheet" href="../static/css/trumbowyg.min.css" />
+
+
         <!--<link rel="stylesheet" href="../static/css/toastr.min.css" />-->
 
         {% if admin_area %}
@@ -24,8 +28,10 @@
         <script type="text/javascript" src="../static/js/jquery-3.2.1.min.js"></script>
         <script type="text/javascript" src="../static/js/jquery.form.min.js"></script>
         <script type="text/javascript" src="../static/js/mbox-0.0.1.min.js"></script>
+        <script src="../static/js/trumbowyg.min.js"></script>
         <!--<script type="text/javascript" src="../static/js/toastr.min.js"></script>-->
         <script type="text/javascript" src="../static/js/materialize.min.js"></script>
+
 
         <script type="text/javascript">
             var csrf_token = '{{ c.CSRF_TOKEN }}';
@@ -90,7 +96,7 @@
         </ul>
           <nav>
             <div class="nav-wrapper red darken-3">
-              <a href="../common/" class="brand-logo">{{c.ORGANIZATION_NAME}}</a>
+              <a href="../common/" class="brand-logo" style="padding-left: 1em;">{{c.ORGANIZATION_NAME}}</a>
                 <a href="#" data-activates="mobile-nav" class="button-collapse right"><i class="fa fa-bars fa-3x"></i></a>
               <ul id="nav-mobile" class="right hide-on-med-and-down">
                   {% block mainmenu %}
@@ -106,7 +112,7 @@
                                 </li>
 
                                     <ul id="submenu-{{menu_item.name|rerender|replace(' ', '_') }}" class="dropdown-content">
-                                    {% for submenu_item in menu_item.submenu %}
+                                    {% for submenu_item in menu_item.submenu|sort(attribute='name') %}
                                         <li>
                                             {% if submenu_item.href %}
                                                 <a href="{{ submenu_item.href|rerender }}">
@@ -136,7 +142,7 @@
                                 </li>
 
                                     <ul id="submenuMobile-{{menu_item.name|rerender|replace(' ', '_') }}" class="dropdown-content">
-                                    {% for submenu_item in menu_item.submenu %}
+                                    {% for submenu_item in menu_item.submenu|sort(attribute='name') %}
                                         <li>
                                             {% if submenu_item.href %}
                                                 <a href="{{ submenu_item.href|rerender }}">
@@ -150,7 +156,6 @@
 
                             {% endif %}
                         {% endfor %}
-
                 </ul>
 
             </div>

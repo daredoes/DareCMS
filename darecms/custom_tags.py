@@ -300,8 +300,11 @@ def random_hash():
     return result.decode("utf-8")
 
 @JinjaEnv.jinja_filter
-def rerender(value):
-    data = renderable_data()
+def rerender(value, obj=None):
+    data = {
+        obj.__class__.__name__: obj
+    }
+    data = renderable_data(data)
     template = jinja2.Template(value)
     rendered = template.render(data)
     return rendered

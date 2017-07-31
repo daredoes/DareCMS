@@ -1,3 +1,65 @@
 .rounded{
     border-radius: 2px;
 }
+
+.little-padding{
+    padding:0 .05em !important;
+}
+
+.no-padding{
+    padding: 0.05em !important;
+}
+
+#photo{
+    display: inline-block;
+    width: 160px;
+    height: 160px;
+    margin-top: -80px;
+    overflow: hidden;
+    padding: 5px;
+}
+
+.heavy{
+    font-weight:700;
+    text-transform: uppercase;
+}
+
+.resume-section-header{
+    font-size: 1.5rem;
+    margin: -.25em 0;
+}
+
+.no-margin-input > input{
+    margin: 0;
+}
+
+.experience-title{
+    font-size: 1.4em;
+    font-weight: 600;
+}
+
+span.badge.boxed{
+    font-weight: 300;
+    font-size: 1rem;
+    color: #fff;
+    background-color: #26a69a;
+    border-radius: 2px;
+}
+
+@media only screen and (max-width: 600px){
+    .resume-container{
+        padding: 0;
+    }
+}
+
+@media only screen and (max-width: 992px){
+
+
+}
+
+@media only screen and (min-width: 993px){
+    .resume-container{
+        padding: 6em 14em;
+    }
+
+}

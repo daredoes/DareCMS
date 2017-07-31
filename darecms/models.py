@@ -551,7 +551,7 @@ class User(MainModel):
     @property
     def age_group_conf(self):
         if self.birthdate:
-            sa.localized_now().date()
+            day = sa.localized_now().date()
             user_age = (day - self.birthdate).days // 365.2425
             for val, age_group in c.AGE_GROUP_CONFIGS.items():
                 if val != c.AGE_UNKNOWN and age_group['min_age'] <= user_age <= age_group['max_age']:

@@ -9,11 +9,11 @@ table form {
 </style>
 
 <div class="row">
-    <div class="col s12 l3 right">
+    <div class="col s12 l3 right little-padding">
 <div class="card grey lighten-4">
 <div class="card-content panel-default">
   <div class="panel-heading">
-    <h3 class="panel-title">New Account</h3>
+    <h3 class="panel-title center">New Account</h3>
   </div>
 
     <form id="new_admin" method="post" action="update" onsubmit="return check_passwords()" role="form" class="form-inline">
@@ -57,12 +57,13 @@ table form {
 </div>
 </div>
 
-<div class="col s12 l9">
-<div class="panel panel-default">
-  <div class="panel-heading">
-    <h3 class="panel-title">Existing Accounts</h3>
+<div class="col s12 l9 little-padding">
+<div class="card grey lighten-5">
+  <div class="card-content">
+    <div class="panel-heading">
+    <h3 class="panel-title center">Existing Accounts</h3>
   </div>
-  <div class="table-responsive">
+    <div class="table-responsive">
     <table class="table table-striped datatable">
       <thead>
         <tr>
@@ -75,7 +76,7 @@ table form {
       </thead>
       <tbody>
       {% for account in accounts %}
-        <tr id="{{ account.email|idize }}">
+        <tr id="{{ account.email|idize }}" class="hoverable">
           <td data-order="{{ account.user.last_first }}" data-search="{{ account.user.last_first }}"> <nobr><a href="../registration/form?id={{ account.user.id }}">{{ account.user.last_first }}</a></nobr> </td>
           <td> <a href="mailto:{{ account.user.email }}">{{ account.user.email }}</a> </td>
           <td>
@@ -105,6 +106,8 @@ table form {
       </tbody>
     </table>
   </div>
+  </div>
+
 </div>
 </div>
 
