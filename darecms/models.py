@@ -540,24 +540,14 @@ class User(MainModel):
         if self.birthdate == '':
             self.birthdate = None
 
-        if self.birthdate:
-            self.age_group = self.age_group_conf['val']
-
         for attr in ['first_name', 'last_name']:
             value = getattr(self, attr)
             if value.isupper() or value.islower():
                 setattr(self, attr, value.title())
 
     @property
-    def age_group_conf(self):
-        if self.birthdate:
-            day = sa.localized_now().date()
-            user_age = (day - self.birthdate).days // 365.2425
-            for val, age_group in c.AGE_GROUP_CONFIGS.items():
-                if val != c.AGE_UNKNOWN and age_group['min_age'] <= user_age <= age_group['max_age']:
-                    return age_group
-
-        return c.AGE_GROUP_CONFIGS[int(self.age_group or c.AGE_UNKNOWN)]
+    def name(self):
+        return '%s %s' % (self.first_name, self.last_name)
 
     @hybrid_property
     def full_name(self):

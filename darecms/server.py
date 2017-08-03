@@ -19,7 +19,7 @@ def log_exception_with_verbose_context(debug=False, msg=''):
 
     page_location = 'Request: ' + cherrypy.request.request_line
 
-    admin_name = "DARE" # AdminAccount.admin_name()
+    admin_name = AdminAccount.admin_name()
     admin_txt = 'Current admin user is: {}'.format(admin_name if admin_name else '[non-admin user]')
 
     max_reporting_length = 1000   # truncate to reasonably large size in case they uploaded attachments
@@ -60,50 +60,17 @@ class StaticViews:
         guessed_content_type = mimetypes.guess_type(content_filename)[0]
         return cherrypy.lib.static.serve_fileobj(content, name=content_filename, content_type=guessed_content_type)
 
-
-class AngularJavascript:
-    @cherrypy.expose
-    def magfest_js(self):
-        """
-        We have several Angular apps which need to be able to access our constants like c.ATTENDEE_BADGE and such.
-        We also need those apps to be able to make HTTP requests with CSRF tokens, so we set that default.
-        """
-        cherrypy.response.headers['Content-Type'] = 'text/javascript'
-
-        consts = {}
-        for attr in dir(c):
-            try:
-                consts[attr] = getattr(c, attr, None)
-            except:
-                pass
-
-        js_consts = json.dumps({k: v for k, v in consts.items() if isinstance(v, (bool, int, str))}, indent=4)
-        return '\n'.join([
-            'angular.module("magfest", [])',
-            '.constant("c", {})'.format(js_consts),
-            '.constant("magconsts", {})'.format(js_consts),
-            '.run(function ($http) {',
-            '   $http.defaults.headers.common["CSRF-Token"] = "{}";'.format(c.CSRF_TOKEN),
-            '});'
-        ])
-
-
 @all_renderable()
 class Root:
     def index(self):
         raise HTTPRedirect('common/')
 
     static_views = StaticViews()
-    angular = AngularJavascript()
 
 mount_site_sections(c.MODULE_ROOT)
 
 cherrypy.tree.mount(Root(), c.PATH, c.APPCONF)
 static_overrides(join(c.MODULE_ROOT, 'static'))
-
-# DaemonTask(check_unassigned, interval=300,          name="mail unassg")
-# DaemonTask(detect_duplicates, interval=300,         name="mail dupes")
-# DaemonTask(check_placeholders, interval=300,        name="mail placeh")
 
 # DaemonTask(SendAllAutomatedEmailsJob.send_all_emails, interval=300,   name="send emails")
 

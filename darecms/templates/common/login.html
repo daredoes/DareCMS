@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Login{% endblock %}
+{% block content %}
+
+<div class="container">
+  <form class="form-signin" role="form" method="post" action="login">
+	<h2 class="form-signin-heading">User Login</h2>
+
+  {{ macros.input('email', type='email', css='form-control', placeholder='Email Address', extra='required autofocus', value=email)}}
+	  {{ macros.input('password', 'password', 'form-control', extra='required', placeholder='Password')}}
+    <input type="hidden" name="original_location" value="{{ original_location }}" />
+	<input class="btn btn-lg btn-primary btn-block" type="submit" value="Sign In"/>
+ 
+ <div class="text-center">
+	<!--<a href="reset">Forgot your password?</a>-->
+</div>
+<br>
+<div class="well">
+	Note: If you are a user wanting to sign
+	up for an account, you may <a href="#">do so here</a>.
+</div> 
+  </form>
+</div>
+
+{% endblock %}

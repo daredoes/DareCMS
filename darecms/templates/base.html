@@ -4,17 +4,17 @@
 <head>
     {{ macros.ie7_compatibility_check() }}
     <title>{{ c.SITE_NAME }} - {% block title %}{% endblock %}</title>
-    <link rel="icon" href="../static/images/favicon.png" type="image/x-icon" />
+    <link rel="icon" href="{{ c.URL_BASE }}/static/images/favicon.png" type="image/x-icon" />
 
     {% block head_styles %}
-        <link rel="stylesheet" href="../static/css/materialize.min.css" />
-        <link rel="stylesheet" href="../static/css/font-awesome.min.css" />
-        <link rel="stylesheet" href="../static/css/mbox-0.0.1.min.css" />
-        <link rel="stylesheet" href="../static/css/custom.css" />
-    <link rel="stylesheet" href="../static/css/trumbowyg.min.css" />
+        <link rel="stylesheet" href="{{ c.URL_BASE }}/static/css/materialize.min.css" />
+        <link rel="stylesheet" href="{{ c.URL_BASE }}/static/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="{{ c.URL_BASE }}/static/css/mbox-0.0.1.min.css" />
+        <link rel="stylesheet" href="{{ c.URL_BASE }}/static/css/custom.css" />
+        <link rel="stylesheet" href="{{ c.URL_BASE }}/static/css/trumbowyg.min.css" />
 
 
-        <!--<link rel="stylesheet" href="../static/css/toastr.min.css" />-->
+        <!--<link rel="stylesheet" href="{{ c.URL_BASE }}/static/css/toastr.min.css" />-->
 
         {% if admin_area %}
         {% endif %}
@@ -25,12 +25,12 @@
             var message = '{{ message|e }}';
         </script>
 
-        <script type="text/javascript" src="../static/js/jquery-3.2.1.min.js"></script>
-        <script type="text/javascript" src="../static/js/jquery.form.min.js"></script>
-        <script type="text/javascript" src="../static/js/mbox-0.0.1.min.js"></script>
-        <script src="../static/js/trumbowyg.min.js"></script>
-        <!--<script type="text/javascript" src="../static/js/toastr.min.js"></script>-->
-        <script type="text/javascript" src="../static/js/materialize.min.js"></script>
+        <script type="text/javascript" src="{{ c.URL_BASE }}/static/js/jquery-3.2.1.min.js"></script>
+        <script type="text/javascript" src="{{ c.URL_BASE }}/static/js/jquery.form.min.js"></script>
+        <script type="text/javascript" src="{{ c.URL_BASE }}/static/js/mbox-0.0.1.min.js"></script>
+        <script src="{{ c.URL_BASE }}/static/js/trumbowyg.min.js"></script>
+        <!--<script type="text/javascript" src="{{ c.URL_BASE }}/static/js/toastr.min.js"></script>-->
+        <script type="text/javascript" src="{{ c.URL_BASE }}/static/js/materialize.min.js"></script>
 
 
         <script type="text/javascript">
@@ -71,7 +71,7 @@
     {% block top_of_body_additional %}
         <!--{% if admin_area %}
             <div id="floating_logo">
-                <img src="../static/theme/bg-logo.png"/>
+                <img src="{{ c.URL_BASE }}/static/theme/bg-logo.png"/>
             </div>
             {% if c.DEV_BOX %}
                 <div id="devbox_cautiontape"></div>
@@ -82,21 +82,21 @@
     <div id="mainContainer" class="container-fluid">
         {% block backlink %}
         <ul id="adminDropdown" class="dropdown-content">
-          <li><a href="../accounts/form?id={{c.CURRENT_ADMIN.id}}">Account</a></li>
+          <li><a href="{{ c.URL_BASE }}/accounts/form?id={{c.CURRENT_ADMIN.id}}">Account</a></li>
             <li class="divider"></li>
-          <li><a href="../accounts/change_password">Change Password</a></li>
+          <li><a href="{{ c.URL_BASE }}/accounts/change_password">Change Password</a></li>
           <li class="divider"></li>
-          <li><a href="../accounts/logout">Log Out</a></li>
+          <li><a href="{{ c.URL_BASE }}/accounts/logout">Log Out</a></li>
         </ul>
         <ul id="adminDropdownMobile" class="dropdown-content">
-          <li><a href="../accounts/form?id={{c.CURRENT_ADMIN.id}}">Account</a></li>
-          <li><a href="../accounts/change_password">Change Password</a></li>
+          <li><a href="{{ c.URL_BASE }}/accounts/form?id={{c.CURRENT_ADMIN.id}}">Account</a></li>
+          <li><a href="{{ c.URL_BASE }}/accounts/change_password">Change Password</a></li>
           <li class="divider"></li>
-          <li><a href="../accounts/logout">Log Out</a></li>
+          <li><a href="{{ c.URL_BASE }}/accounts/logout">Log Out</a></li>
         </ul>
           <nav>
             <div class="nav-wrapper red darken-3">
-              <a href="../common/" class="brand-logo" style="padding-left: 1em;">{{c.ORGANIZATION_NAME}}</a>
+              <a href="{{ c.URL_BASE }}/common/" class="brand-logo" style="padding-left: 1em;">{{c.ORGANIZATION_NAME}}</a>
                 <a href="#" data-activates="mobile-nav" class="button-collapse right"><i class="fa fa-bars fa-3x"></i></a>
               <ul id="nav-mobile" class="right hide-on-med-and-down">
                   {% block mainmenu %}
@@ -112,7 +112,7 @@
                                 </li>
 
                                     <ul id="submenu-{{menu_item.name|rerender|replace(' ', '_') }}" class="dropdown-content">
-                                    {% for submenu_item in menu_item.submenu|sort(attribute='name') %}
+                                    {% for submenu_item in menu_item.submenu %}
                                         <li>
                                             {% if submenu_item.href %}
                                                 <a href="{{ submenu_item.href|rerender }}">
@@ -142,7 +142,7 @@
                                 </li>
 
                                     <ul id="submenuMobile-{{menu_item.name|rerender|replace(' ', '_') }}" class="dropdown-content">
-                                    {% for submenu_item in menu_item.submenu|sort(attribute='name') %}
+                                    {% for submenu_item in menu_item.submenu %}
                                         <li>
                                             {% if submenu_item.href %}
                                                 <a href="{{ submenu_item.href|rerender }}">
