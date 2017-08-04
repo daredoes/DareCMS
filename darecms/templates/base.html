@@ -112,7 +112,7 @@
                                 </li>
 
                                     <ul id="submenu-{{menu_item.name|rerender|replace(' ', '_') }}" class="dropdown-content">
-                                    {% for submenu_item in menu_item.submenu %}
+                                    {% for submenu_item in menu_item.submenu|sort(attribute='name') %}
                                         <li>
                                             {% if submenu_item.href %}
                                                 <a href="{{ submenu_item.href|rerender }}">
@@ -142,7 +142,7 @@
                                 </li>
 
                                     <ul id="submenuMobile-{{menu_item.name|rerender|replace(' ', '_') }}" class="dropdown-content">
-                                    {% for submenu_item in menu_item.submenu %}
+                                    {% for submenu_item in menu_item.submenu|sort(attribute='name') %}
                                         <li>
                                             {% if submenu_item.href %}
                                                 <a href="{{ submenu_item.href|rerender }}">

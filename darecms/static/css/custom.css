@@ -44,6 +44,32 @@ span.badge.boxed{
     color: #fff;
     background-color: #26a69a;
     border-radius: 2px;
+    width: 100%;
+    height: 100%;
+}
+
+.resume-bar {
+    background-color: #F4F4F4;
+    padding: 0.5em;
+    transition: box-shadow .25s;
+    border-radius: 1px;
+}
+
+.resume-bar-holder {
+    padding-top: 0.25em;
+    padding-bottom: 0.25em;
+}
+
+.resume-bar-text{
+    color: #F4F4F4;
+    font-weight: 500;
+    text-transform: capitalize;
+
+}
+
+.resume-bar-level-text{
+    font-weight: 400;
+    color: #F1F1F1;
 }
 
 @media only screen and (max-width: 600px){
