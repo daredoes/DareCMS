@@ -90,5 +90,5 @@ c.MENU = MenuItem(name='Root', submenu=[
     MenuItem(name='{{ "Logout" if c.CURRENT_ADMIN else "Login" }}',
              href='{{ c.PATH + "/accounts/logout" if c.CURRENT_ADMIN else c.PATH + "/accounts/login" }}',
              priority=100000),
-    MenuItem(name="Sitemap", href="{{ c.PATH }}/accounts/sitemap", priority=100000)
+    MenuItem(name="Sitemap", href="{{ c.PATH }}/accounts/sitemap", priority=99999, access=[c.PEOPLE])
 ])
