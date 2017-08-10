@@ -74,7 +74,7 @@ span.badge.boxed{
 
 @media only screen and (max-width: 600px){
     .resume-container{
-        padding: 0;
+        padding: 300px 0;
     }
 }
 
