@@ -68,7 +68,7 @@ class Root:
         page = int(page)
         if search_text:
             page = page or 1
-            if search_text and count == total_count:
+            if search_text and count == total_count and total_count != 1:
                 message = 'No matches found'
             elif search_text and count == 1:
                 raise HTTPRedirect('form?id={}&message={}', users.one().id, 'This attendee was the only search result')
@@ -217,6 +217,28 @@ class Root:
 
         return {
             'email':   email,
+            'message': message
+        }
+
+    def update_password_of_other(self, session, id, message='', updater_password=None, new_password=None,
+                                 csrf_token=None, confirm_new_password=None):
+        if updater_password is not None:
+            new_password = new_password.strip()
+            updater_account = session.admin_account(cherrypy.session['account_id'])
+            if not new_password:
+                message = 'New password is required'
+            elif not valid_password(updater_password, updater_account):
+                message = 'Your password is incorrect'
+            elif new_password != confirm_new_password:
+                message = 'Passwords do not match'
+            else:
+                check_csrf(csrf_token)
+                account = session.admin_account(id)
+                account.hashed = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt())
+                raise HTTPRedirect('index?message={}', 'Account Password Updated')
+
+        return {
+            'account': session.admin_account(id),
             'message': message
         }
 
