@@ -492,6 +492,22 @@ class Session(SessionManager):
 
             return True
 
+        def all_users(self, only_verified=False):
+            """
+            Returns a Query of Attendees with efficient loading for groups and
+            shifts/jobs.
+
+            In some cases we only want to return attendees where "staffing"
+            is true, because before the event people can't sign up for shifts
+            unless they're marked as volunteers.  However, on-site we relax that
+            restriction, so we'll get attendees with shifts who are not actually
+            marked as staffing.  We therefore have an optional parameter for
+            clients to indicate that all attendees should be returned.
+            """
+            return (self.query(User)
+                    .filter(*[User.verified == True] if only_verified else [])
+                    .order_by(User.full_name))
+
     @classmethod
     def model_mixin(cls, model):
         if model.__name__ in ['SessionMixin', 'QuerySubclass']:

@@ -254,8 +254,9 @@ def get_module_name(class_or_func):
     return class_or_func.__module__.split('.')[-1]
 
 
-def _get_template_filename(func):
-    return os.path.join(get_module_name(func), func.__name__ + '.html')
+def _get_template_filename(func, suffix=None):
+    title = func.__name__ + suffix if suffix else func.__name__
+    return os.path.join(get_module_name(func), title + '.html')
 
 
 def prettify_breadcrumb(str):
@@ -269,7 +270,7 @@ def renderable(func):
         if c.UBER_SHUT_DOWN and not cherrypy.request.path_info.startswith('/schedule'):
             return render('closed.html')
         elif isinstance(result, dict):
-            return render(_get_template_filename(func), result)
+            return render(_get_template_filename(func, suffix=result.get('suffix')), result)
         else:
             return result
     return with_rendering

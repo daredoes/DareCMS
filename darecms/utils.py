@@ -147,7 +147,7 @@ def hour_day_format(dt):
 
 
 def send_email(source, dest, subject, body, format='text', cc=(), bcc=(), model=None, ident=None):
-    subject = subject.format(EVENT_NAME=c.EVENT_NAME)
+    subject = subject.format(c=c)
     to, cc, bcc = map(listify, [dest, cc, bcc])
     ident = ident or subject
     if c.DEV_BOX:
@@ -155,16 +155,16 @@ def send_email(source, dest, subject, body, format='text', cc=(), bcc=(), model=
             xs[:] = [email for email in xs if email.endswith('mailinator.com') or c.DEVELOPER_EMAIL in email]
 
     if c.SEND_EMAILS and to:
-        # message = EmailMessage(subject=subject, **{'bodyText' if format == 'text' else 'bodyHtml': body})
-        # AmazonSES(c.AWS_ACCESS_KEY, c.AWS_SECRET_KEY).sendEmail(
-        #     source=source,
-        #     toAddresses=to,
-        #     ccAddresses=cc,
-        #     bccAddresses=bcc,
-        #     message=message
-        # )
-        # sleep(0.1)  # avoid hitting rate limit
-        pass
+         message = EmailMessage(subject=subject, **{'bodyText' if format == 'text' else 'bodyHtml': body})
+         AmazonSES(c.AWS_ACCESS_KEY, c.AWS_SECRET_KEY).sendEmail(
+             source=source,
+             toAddresses=to,
+             ccAddresses=cc,
+             bccAddresses=bcc,
+             message=message
+         )
+         sleep(0.1)  # avoid hitting rate limit
+         pass
     else:
         log.error('email sending turned off, so unable to send {}', locals())
 

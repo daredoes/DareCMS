@@ -21,9 +21,6 @@ class Root:
             'message': params.get('message')
         }
 
-    def creative(self):
-        return {}
-
     def login(self, session, message='', original_location=None, **params):
         original_location = create_valid_user_supplied_redirect_url(original_location, default_url='../accounts/')
 
