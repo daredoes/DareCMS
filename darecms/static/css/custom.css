@@ -72,6 +72,11 @@ span.badge.boxed{
     color: #F1F1F1;
 }
 
+.scroll-box{
+    overflow-y: scroll;
+    max-height: 25rem;
+}
+
 @media only screen and (max-width: 600px){
     .resume-container{
         padding: 6rem 0;
