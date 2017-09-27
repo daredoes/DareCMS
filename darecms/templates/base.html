@@ -81,7 +81,7 @@
     {% endblock %}
     <div id="mainContainer" class="container-fluid">
         {% block backlink %}
-        <ul id="adminDropdown" class="dropdown-content">
+        <ul id="adminDropdown" class="dropdown-content no-print">
           <li><a href="{{ c.PATH }}/accounts/form?id={{c.CURRENT_ADMIN.id}}">Account</a></li>
             <li class="divider"></li>
           <li><a href="{{ c.PATH }}/accounts/change_password">Change Password</a></li>
@@ -94,9 +94,9 @@
           <li class="divider"></li>
           <li><a href="{{ c.PATH }}/accounts/logout">Log Out</a></li>
         </ul>
-          <nav>
-            <div class="nav-wrapper red darken-3">
-              <a href="{{ c.PATH }}/common/" class="brand-logo" style="padding-left: 1em;">{{c.ORGANIZATION_NAME}}</a>
+          <nav class="no-print">
+            <div class="nav-wrapper red darken-3 no-print">
+              <a href="{{ c.PATH }}/common/" class="brand-logo no-print" style="padding-left: 1em;">{{c.ORGANIZATION_NAME}}</a>
                 <a href="#" data-activates="mobile-nav" class="button-collapse right"><i class="fa fa-bars fa-3x"></i></a>
               <ul id="nav-mobile" class="right hide-on-med-and-down">
                   {% block mainmenu %}
