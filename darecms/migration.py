@@ -9,10 +9,10 @@ from sideboard.internal.imports import plugin_dirs
 
 
 # Path to "alembic.ini", cached here for convenience
-alembic_ini_path = abspath(join(plugin_dirs['uber'], 'alembic.ini'))
+alembic_ini_path = abspath(join(plugin_dirs['darecms'], 'alembic.ini'))
 
 # Path to "alembic" directory, cached here for convenience
-script_location = abspath(join(plugin_dirs['uber'], 'alembic'))
+script_location = abspath(join(plugin_dirs['darecms'], 'alembic'))
 
 # Version locations are usually hard-coded in "alembic.ini". Since uber ships
 # with a variety of plugins, each with its own set of version scripts, we must
