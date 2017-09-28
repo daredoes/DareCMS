@@ -59,8 +59,7 @@ return "<a onClick='{inner_text}' href='{self.href}'>{self.text}</a>".format(inn
 {%- endmacro %}
 
 {% macro dropdown(model, field_name, match_num='', no_instance=False, column_css='s6 m3') -%}
-    {%- set defaults = model[field_name] if no_instance else None -%}
-    {%- set defaults = defaults.split(",") if defaults else [] -%}
+    
     <select name="{{ field_name }}">
         <option value="" disabled {{ 'selected' if not match_num else ''}}>Choose your {{ field_name }}</option>
     {% for num, desc in model.get_field(field_name).type.choices -%}
