@@ -11,7 +11,7 @@ import sideboard.lib.sa
 
 # revision identifiers, used by Alembic.
 revision = '0904da817363'
-down_revision = '168ddfd45528'
+down_revision = None
 branch_labels = ('darecms',)
 depends_on = None
 
