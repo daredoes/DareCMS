@@ -85,7 +85,8 @@ c.MENU = MenuItem(name='Root', submenu=[
     ]),
     MenuItem(name='{{ c.CURRENT_ADMIN.first_name }} {{ c.CURRENT_ADMIN.last_name }}', access=[c.ACCOUNTS], submenu=[
         MenuItem(name='Change Password', href='{{ c.PATH }}/accounts/change_password'),
-        MenuItem(name='Edit Info', href='{{ c.PATH }}/accounts/form?id={{ c.CURRENT_ADMIN.id }}')
+        MenuItem(name='Edit Info', href='{{ c.PATH }}/accounts/form?id={{ c.CURRENT_ADMIN.id }}'),
+        MenuItem(name='Manage Address Book', href='{{ c.PATH }}/accounts/address_book?user_id={{ c.CURRENT_ADMIN.id }}    ')
     ]),
     MenuItem(name='{{ "Logout" if c.CURRENT_ADMIN else "Login" }}',
              href='{{ c.PATH + "/accounts/logout" if c.CURRENT_ADMIN else c.PATH + "/accounts/login" }}',

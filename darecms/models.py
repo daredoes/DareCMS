@@ -562,6 +562,14 @@ class User(MainModel):
                 setattr(self, attr, value.title())
 
     @property
+    def address(self):
+        if self.addresses:
+            if len(self.addresses) == 1:
+                return self.addresses[0]
+            else:
+                return sorted(self.addresses, lambda x: x.priority)[0]
+
+    @property
     def name(self):
         return '%s %s' % (self.first_name, self.last_name)
 
@@ -620,6 +628,39 @@ class WatchList(MainModel):
     def _fix_birthdate(self):
         if self.birthdate == '':
             self.birthdate = None
+
+class Address(MainModel):
+    user_id = Column(UUID, ForeignKey('user.id'), unique=False)
+    resident = relationship('User', backref='addresses', foreign_keys=user_id, cascade='save-update,merge,refresh-expire,expunge')
+    street = Column(UnicodeText)
+    street_two = Column(UnicodeText)
+    city = Column(UnicodeText)
+    state = Column(UnicodeText)
+    zip_code = Column(UnicodeText)
+    country = Column(MultiChoice(c.COUNTRY_OPTS))
+    priority = Column(Integer, default=0)
+
+    @property
+    def p_o_box(self):
+        return self.zip_code
+
+    @property
+    def region(self):
+        return self.state
+
+    @property
+    def province(self):
+        return self.state
+
+    @property
+    def name(self):
+        name = self.street
+        if self.street_two:
+            name += ", " + self.street_two
+        name += "\n"
+        name += self.city + ", " + self.state + " " + self.zip_code + "\n"
+        name += c.COUNTRYS[int(self.country)]
+        return name
 
 
 class AdminAccount(MainModel):

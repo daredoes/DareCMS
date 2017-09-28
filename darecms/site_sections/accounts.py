@@ -111,6 +111,35 @@ class Root:
             'user': user
         }
 
+    def address_book(self, id=None, session=None, message='', new_entry=None, **params):
+        user = None
+        if id:
+            params['id'] = id
+        address = session.address(params, ignore_csrf=True)
+
+
+        if 'user_id' in params:
+            user = session.user(params['user_id'])
+            if 'add' in params:
+                message = check(address)
+                if not message:
+                    session.add(address)
+                    session.commit()
+                message = 'Address Saved'
+
+        else:
+            raise HTTPRedirect("../")
+
+
+
+        return {
+            'user': user,
+            'address': address,
+            'message': message,
+            'id': id,
+            'new_entry': True if new_entry else False
+        }
+
     @unrestricted
     def insert_test_admin(self, session):
         if session.insert_test_admin_account():

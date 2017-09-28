@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+{% block title %}{% if id %}Edit Address{% else %}Address Book{% endif %}{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="card grey lighten-4">
+        <div class="card-content">
+            <span class="card-title"><h3>{% if id %}Edit Address{% else %}Address Book{% endif %}</h3></span>
+            {% if user %}
+            <form id="choose_existing" action="address_book" method="post">
+                    {{ csrf_token() }}
+                    <input type="hidden" value="" id="existing_id" name="id">
+                    <input type="hidden" value="{{user.id}}" name="user_id">
+
+            </form>
+            {% endif %}
+            {% if id or new_entry %}
+                {% if user %}
+                <form id="choose_new" action="address_book" method="post">
+                    {{ csrf_token() }}
+                    <input type="hidden" value="True" name="new_entry">
+                    <input type="hidden" value="{{user.id}}" name="user_id">
+                </form>
+
+                <select id="choose_select" onchange="choose_select_change();">
+                    <option value="" disabled selected >Choose Another Address</option>
+                    <option value="new">Add New Address</option>
+                    {% for addr in user.addresses %}
+                    <option value="{{ addr.id }}">{{ addr.name }}</option>
+                    {% endfor %}
+                </select>
+                {% endif %}
+            <form action="address_book" method="post">
+                {{ csrf_token() }}
+                <input type="hidden" value="" name="add" />
+                <input type="hidden" value="{{ address.id }}" name="id">
+                <input type="hidden" value="{{user.id}}" name="user_id">
+                <div class="row">
+                            <div class="col s12">
+                                <p class="range-field">
+                                    <input type="range" min="-100" max="100" value="{{ address.priority }}" name="priority" />
+
+                                    <span class="left">Left-Most Priority</span><span class="right">Right-Most Priority</span>
+                                </p>
+                            </div>
+                        </div>
+                <div class="row">
+                    <div class="col s12 m6">
+                        <label for="street">Address Line 1</label>
+                        <input type="text" name="street" id="street" value="{{address.street}}" placeholder=""/>
+                    </div>
+                    <div class="col s12 m6">
+                        <label for="street_two">Address Line 2</label>
+                        <input type="text" name="street_two" id="street_two" value="{{address.street_two}}" placeholder=""/>
+                    </div>
+                </div>
+                <div class="row">
+
+                    <div class="col s12 m12 input-field">
+                        <label for="city">City/Town</label>
+                        <input type="text" name="city" id="city" value="{{address.city}}" placeholder="" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col s12 input-field">
+                        <label for="state">State / Province / Region </label>
+                        <input type="text" id="state" name="state" value="{{address.state}}" placeholder="">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col s12 input-field">
+                        <label for="zip">Zip or Postal Code</label>
+                        <input type="text" name="zip_code" id="zip" value="{{address.zip_code}}" placeholder="" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col s12 input-field">
+                        {% if address %}{{ macros.dropdown(address, 'country', match_num=address.country, column_css='col s6') }}
+                        {% else %}{{ macros.dropdown('address', 'country', column_css='col s6', no_instance=True) }}{% endif %}
+
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col s12 input-field"></div>
+                    <input type="submit" class="waves-effect waves-light btn" />
+                </div>
+            </form>
+            {% elif user %}
+            <div class="collection">
+                <form id="new_address" method="post" action="address_book">
+                    {{ csrf_token() }}
+                    <input type="text" value="true" name="new_entry" hidden/>
+                    <input type="text" value="{{ user.id}}" hidden name="user_id" />
+                    <a href="#!" onclick="document.getElementById('new_address').submit();" class="collection-item">Add New Address</a>
+                </form>
+                {% for addr in user.addresses %}
+                <a href="#!" onclick="choose_existing('{{ addr.id }}');" class="collection-item">{{ addr.name }}</a>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+<script>
+
+    var choose_existing = function(id){
+        document.getElementById('existing_id').value = id;
+        document.getElementById('choose_existing').submit();
+    };
+    var choose_select_change = function(){
+        var val = document.getElementById('choose_select').value;
+        if(val) {
+            if (val == 'new') {
+                document.getElementById('choose_new').submit();
+            }
+            else{
+                choose_existing(val);
+            }
+        }
+    };
+
+</script>
+{% endblock %}
+
+{% block jquery_ready %}
+$('.datepicker').pickadate({
+    selectMonths: true, // Creates a dropdown to control month
+    selectYears: 115 // Creates a dropdown of 15 years to control year
+  });
+$('select').material_select();
+{% endblock %}
