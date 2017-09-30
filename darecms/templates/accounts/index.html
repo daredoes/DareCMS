@@ -77,7 +77,7 @@ table form {
       <tbody>
       {% for account in accounts %}
         <tr id="{{ account.email|idize }}" class="hoverable">
-          <td data-order="{{ account.user.last_first }}" data-search="{{ account.user.last_first }}"> <nobr><a href="../registration/form?id={{ account.user.id }}">{{ account.user.last_first }}</a></nobr> </td>
+          <td data-order="{{ account.user.last_first }}" data-search="{{ account.user.last_first }}"> <nobr><a href="../accounts/form?id={{ account.user.id }}">{{ account.user.last_first }}</a></nobr> </td>
           <td> <a href="mailto:{{ account.user.email }}">{{ account.user.email }}</a> </td>
           <td>
             <form class="form update-form" method="post" action="update">
