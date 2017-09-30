@@ -117,7 +117,6 @@ class Root:
             params['id'] = id
         address = session.address(params, ignore_csrf=True)
 
-
         if 'user_id' in params:
             user = session.user(params['user_id'])
             if 'add' in params:
