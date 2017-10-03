@@ -62,7 +62,7 @@ class MenuItem:
         out['name'] = self.name
         if self.submenu:
             out['submenu'] = []
-            for menu_item in sorted(self.submenu, key=lambda x: x.priority):
+            for menu_item in sorted(sorted(self.submenu, key=lambda x: x.name), key=lambda x: x.priority):
                 filtered_menu_items = menu_item.render_items_filtered_by_current_access()
                 if filtered_menu_items:
                     out['submenu'].append(filtered_menu_items)
