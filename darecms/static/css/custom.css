@@ -81,6 +81,15 @@ span.badge.boxed{
         margin: 0;
     }
 
+ul.list{
+    display: list-item;
+}
+
+ul.list > li {
+    margin-left: 1rem;
+    list-style-type: square;
+}
+
 @media only screen and (max-width: 600px){
     .resume-container{
         padding: 6rem 0;
