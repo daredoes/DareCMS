@@ -657,9 +657,9 @@ class Address(MainModel):
         name = self.street
         if self.street_two:
             name += ", " + self.street_two
-        name += "\n"
+        name += ",\n"
         name += self.city + ", " + self.state + " " + self.zip_code + "\n"
-        name += c.COUNTRYS[int(self.country)]
+        # name += c.COUNTRYS[int(self.country)]
         return name
 
 
