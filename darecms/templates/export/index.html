@@ -1,0 +1,26 @@
+{% extends "base.html" %}{% set admin_area=True %}
+{% block title %}CSV Export{% endblock %}
+{% block content %}
+<div class="container">
+<h2> CSV Table Export </h2>
+This exports all rows in the database for the table you select. <strong>Please take care with large exports, as
+they will freeze up the system. THIS PAGE IS FOR EXPERTS ONLY.</strong>
+    If you need to import data, use the <a href="{{ c.PATH }}/import/">CSV Import page</a>.
+
+<br/>
+<div class="row">
+    <div class="col s12">
+<form action="export_model" method="post" enctype="multipart/form-data">
+    <select name="selected_model">
+        {{ options(tables, default='User') }}
+    </select><br />
+    <input type="submit" value="Download" />
+</form>
+        </div>
+</div>
+
+</div>
+{% endblock %}
+{% block jquery_ready %}
+$('select').material_select();
+{% endblock %}
