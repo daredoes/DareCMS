@@ -94,11 +94,18 @@ ul.list > li {
     .resume-container{
         padding: 6rem 0;
     }
+
+    .mobile-container{
+        padding: 0 0;
+    }
 }
 
 @media only screen and (max-width: 992px){
     .resume-container{
         padding: 6rem 0;
+    }
+    .mobile-container{
+        padding: 0 0;
     }
 
 }
@@ -107,5 +114,13 @@ ul.list > li {
     .resume-container{
         padding: 6em 14em;
     }
+    .mobile-container{
+        padding: 0 10%;
+    }
 
+}
+
+.fake-disabled{
+    color: black !important;
+    font-size: 1.5em !important;
 }

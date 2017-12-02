@@ -98,8 +98,8 @@
         </ul>
           <nav class="no-print">
             <div class="nav-wrapper red darken-3 no-print">
-              <a href="{{ c.PATH }}/common/" class="brand-logo no-print" style="padding-left: 1em;">{{c.ORGANIZATION_NAME}}</a>
-                <a href="#" data-activates="mobile-nav" class="button-collapse right"><i class="fa fa-bars fa-3x"></i></a>
+              <a href="{{ c.PATH }}/common/" class="brand-logo no-print" style="padding-left: 1em;">{% block page_title %}{{c.ORGANIZATION_NAME}}{% endblock %}</a>
+                <a href="#" data-activates="mobile-nav" class="button-collapse left"><i class="fa fa-bars fa-3x"></i></a>
               <ul id="nav-mobile" class="right hide-on-med-and-down">
                   {% block mainmenu %}
                         {% block mainmenu_items %}
@@ -138,23 +138,30 @@
                                 <li><a href="{{ menu_item.href|rerender }}">{{ menu_item.name|rerender }}</a></li>
                             {% elif menu_item.submenu %}
                                 <li>
-                                    <a class="dropdown-button" href="#!" data-beloworigin="true" data-activates="submenuMobile-{{menu_item.name|rerender|replace(' ', '_') }}">
-                                        {{ menu_item.name|rerender }}<i class="fa fa-arrow-circle-down right"></i>
-                                    </a>
+                                    <ul class="collapsible collapsible-accordion">
+                                        <li>
+                                            <a class="collapsible-header">{{ menu_item.name|rerender}} <i class="fa fa-caret-down"></i></a>
+                                            <div class="collapsible-body">
+                                                <ul>
+                                                    {% for submenu_item in menu_item.submenu|sort(attribute='name') %}
+                                                        <li>
+                                                            {% if submenu_item.href %}
+                                                                <a href="{{ submenu_item.href|rerender }}">
+                                                            {% else %}
+                                                                <a class="disabled">
+                                                            {% endif %}
+                                                            {{ submenu_item.name|rerender }}</a>
+                                                        </li>
+                                                    {% endfor %}
+                                                    <li class="divider">
+
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </li>
+                                    </ul>
                                 </li>
 
-                                    <ul id="submenuMobile-{{menu_item.name|rerender|replace(' ', '_') }}" class="dropdown-content">
-                                    {% for submenu_item in menu_item.submenu|sort(attribute='name') %}
-                                        <li>
-                                            {% if submenu_item.href %}
-                                                <a href="{{ submenu_item.href|rerender }}">
-                                            {% else %}
-                                                <a class="disabled">
-                                            {% endif %}
-                                            {{ submenu_item.name|rerender }}</a>
-                                        </li>
-                                    {% endfor %}
-                                    </ul>
 
                             {% endif %}
                         {% endfor %}
