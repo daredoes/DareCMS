@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% block title %}Create New Account{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="card grey lighten-4">
+        <div class="card-content">
+            <span class="card-title"><h3>User Information</h3></span>
+            <form action="" method="post" onsubmit="return check_passwords()">
+                {{ csrf_token() }}
+
+                <div class="row">
+                    <div class="col s12 m6">
+                        <label for="first_name">First Name</label>
+                        <input type="text" name="first_name" id="first_name" value="{{user.first_name}}" placeholder="First Name" required/>
+                    </div>
+                    <div class="col s12 m6">
+                        <label for="last_name">Last Name</label>
+                        <input type="text" name="last_name" id="last_name" value="{{user.last_name}}" placeholder="Last Name" required/>
+                    </div>
+                </div>
+                <div class="row">
+
+                    <div class="col s12 input-field">
+                        <label for="email">Email</label>
+                        <input type="email" name="email" id="email" value="{{user.email}}" placeholder="example@example.com"  required/>
+                    </div>
+                    <div class="col s12 input-field">
+                        <label for="password">Password</label>
+                        <input type="password" name="password" id="password" required />
+                    </div>
+                    <div class="col s12 input-field">
+                        <label for="check-password">Password Check</label>
+                        <input type="password" id="check-password" required />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col s12 input-field">
+                        <label for="birthdate">Birth Date</label>
+                        <input type="date" class="datepicker" id="birthdate" name="birthdate" value="{{user.birthdate}}">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col s12 input-field">
+                        <label for="cellphone">Cell Number</label>
+                        <input type="text" name="cellphone" id="cellphone" value="{{user.cellphone}}" placeholder="555-555-5555" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col s12 input-field">
+                        <label for="found_how">Found How?</label>
+                        <input type="text" name="found_how" id="found_how" value="{{user.found_how}}" placeholder="How did you hear about us?" />
+
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col s12 input-field ">
+                        <textarea id="comments" class="materialize-textarea" value="{{user.comments}}"></textarea>
+                        <label for="comments">Comments</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col s12 input-field"></div>
+                    <input type="submit" class="waves-effect waves-light btn" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    function check_passwords() {
+    if (document.getElementById("password").value != document.getElementById("check-password").value) {
+        alert("Passwords must match");
+        return false;
+    }
+    return true;
+}
+</script>
+{% endblock %}
+
+{% block jquery_ready %}
+$('.datepicker').pickadate({
+    selectMonths: true, // Creates a dropdown to control month
+    selectYears: 115 // Creates a dropdown of 15 years to control year
+  });
+{% endblock %}
