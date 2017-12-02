@@ -150,7 +150,7 @@ class Root:
 
     @unrestricted
     def login(self, session, message='', original_location=None, **params):
-        original_location = create_valid_user_supplied_redirect_url(original_location, default_url='homepage')
+        original_location = create_valid_user_supplied_redirect_url(original_location, default_url='../task')
 
         if 'email' in params:
             try:
