@@ -11,7 +11,7 @@ def valid_password(password, account):
 @all_renderable()
 class Root:
     def index(self, session,  password='', message='', original_location=None, **params):
-        original_location = create_valid_user_supplied_redirect_url(original_location, default_url='../task')
+        original_location = create_valid_user_supplied_redirect_url(original_location, default_url='../soda')
         user = session.user(params, checkgroups=User.all_checkgroups, bools=User.all_bools)
         if user.is_new:
             message = check(user)
